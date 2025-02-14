@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-guardrail"
+version = "0.4.2"
+description = "Deterministic High-Assurance Guardrail Engine for Autonomous AI Coding Agents"
+readme = "README.md"
+authors = [{ name = "zcdlab" }]
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.0",
+    "fastmcp>=0.4.0",
+    "pytest>=8.0",
+]
+
+[project.scripts]
+guardrail = "src.cli:main"
+agent-guardrail = "src.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
