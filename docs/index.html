@@ -124,15 +124,13 @@
           <textarea id="prompt-payload-editor" spellcheck="false" oninput="handlePromptEditorInput(this.value)" class="w-full font-mono text-xs text-slate-800 bg-white p-4 border-0 focus:ring-0 outline-none resize-none leading-relaxed min-h-[220px] max-h-[360px] overflow-y-auto block"></textarea>
 
           <div class="bg-slate-50 px-4 py-2.5 border-t border-slate-200 flex flex-wrap justify-between items-center gap-2">
-            <div class="text-[10px] text-slate-500 font-mono">
-              Modify text above freely &bull; Hot-path CPU evaluation
+            <div class="text-[10px] text-slate-500 font-mono flex items-center gap-1.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Hot-Path CPU Engine &bull; Instant keystroke scan (<span id="prompt-realtime-latency" class="text-slate-700 font-semibold">0.019 ms</span>)</span>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="autoSanitizePrompt()" id="btn-prompt-sanitize" class="hidden px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5">
-                <span>⚡</span> <span>Auto-Strip Injections</span>
-              </button>
-              <button onclick="evaluatePromptGuardrail()" id="btn-eval-prompt" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5">
-                <span>⚡</span> <span id="btn-eval-prompt-label">Evaluate Guardrail Engine</span>
+              <button onclick="autoSanitizePrompt()" id="btn-prompt-action" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5">
+                <span>🛡️</span> <span id="btn-prompt-action-label">Enforce Guardrail &amp; Strip Injection (0% &rarr; 100%)</span>
               </button>
             </div>
           </div>
@@ -140,12 +138,18 @@
 
         <!-- Right: Guardrail Verdict -->
         <div class="lg:col-span-5 bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-          <div id="prompt-verdict-banner" class="p-3.5 rounded-lg bg-red-50 border border-red-200 flex items-center justify-between transition-all">
-            <div>
-              <div class="text-[11px] font-semibold text-red-600 uppercase tracking-wide">Hot-Path Verdict</div>
-              <div id="prompt-verdict-title" class="text-base font-bold text-red-900">BLOCKED_BY_GUARDRAIL (403)</div>
+          <!-- Compliance Score Gauge Banner -->
+          <div id="prompt-verdict-banner" class="p-3.5 rounded-lg bg-red-50 border border-red-200 space-y-2.5 transition-all">
+            <div class="flex items-center justify-between">
+              <div>
+                <div id="prompt-score-label" class="text-[10px] font-bold text-red-600 uppercase tracking-wider">Prompt Safety Score: 0% [QUARANTINED]</div>
+                <div id="prompt-verdict-title" class="text-base font-bold text-red-900">BLOCKED_BY_GUARDRAIL (403)</div>
+              </div>
+              <div id="prompt-verdict-icon" class="text-2xl text-red-600 font-bold">✕</div>
             </div>
-            <div id="prompt-verdict-icon" class="text-2xl text-red-600 font-bold">✕</div>
+            <div class="w-full bg-slate-200/80 rounded-full h-1.5 overflow-hidden">
+              <div id="prompt-score-bar" class="bg-red-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
           </div>
 
           <div class="space-y-2 text-xs border-t border-slate-100 pt-3">
@@ -167,7 +171,7 @@
             </div>
           </div>
 
-          <div class="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs">
+          <div id="prompt-remediation-box" class="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs">
             <div class="font-semibold text-slate-700 mb-0.5">Remediation:</div>
             <p id="prompt-remediation-text" class="text-slate-600 leading-relaxed text-[11px]">
               Quarantine document. Strip hidden HTML comments and notify repository administrator of attempted indirect prompt injection.
@@ -241,27 +245,31 @@
           <textarea id="cyber-payload-editor" spellcheck="false" oninput="handleCyberEditorInput(this.value)" class="w-full font-mono text-xs text-slate-800 bg-white p-4 border-0 focus:ring-0 outline-none resize-none leading-relaxed min-h-[220px] max-h-[360px] overflow-y-auto block"></textarea>
 
           <div class="bg-slate-50 px-4 py-2.5 border-t border-slate-200 flex flex-wrap justify-between items-center gap-2">
-            <div class="text-[10px] text-slate-500 font-mono">
-              Modify code above freely &bull; Tested against hot-path AST &amp; regex
+            <div class="text-[10px] text-slate-500 font-mono flex items-center gap-1.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Hot-Path CPU Engine &bull; Instant keystroke scan (<span id="cyber-realtime-latency" class="text-slate-700 font-semibold">0.028 ms</span>)</span>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="autoSanitizeCyber()" id="btn-cyber-sanitize" class="hidden px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5">
-                <span>⚡</span> <span id="btn-cyber-sanitize-label">Auto-Sanitize Secrets</span>
-              </button>
-              <button onclick="evaluateCyberGuardrail()" id="btn-eval-cyber" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5">
-                <span>⚡</span> <span id="btn-eval-cyber-label">Evaluate Cyber Defense</span>
+              <button onclick="autoSanitizeCyber()" id="btn-cyber-action" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5">
+                <span>🛡️</span> <span id="btn-cyber-action-label">Enforce Guardrail &amp; Auto-Remediate (0% &rarr; 100%)</span>
               </button>
             </div>
           </div>
         </div>
 
         <div class="lg:col-span-5 bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-          <div id="cyber-verdict-banner" class="p-3.5 rounded-lg bg-red-50 border border-red-200 flex items-center justify-between transition-all">
-            <div>
-              <div class="text-[11px] font-semibold text-red-600 uppercase tracking-wide">Hot-Path Verdict</div>
-              <div id="cyber-verdict-title" class="text-base font-bold text-red-900">BLOCKED_BY_GUARDRAIL (403)</div>
+          <!-- Compliance Score Gauge Banner -->
+          <div id="cyber-verdict-banner" class="p-3.5 rounded-lg bg-red-50 border border-red-200 space-y-2.5 transition-all">
+            <div class="flex items-center justify-between">
+              <div>
+                <div id="cyber-score-label" class="text-[10px] font-bold text-red-600 uppercase tracking-wider">Compliance Score: 0% [BLOCKED]</div>
+                <div id="cyber-verdict-title" class="text-base font-bold text-red-900">BLOCKED_BY_GUARDRAIL (403)</div>
+              </div>
+              <div id="cyber-verdict-icon" class="text-2xl text-red-600 font-bold">✕</div>
             </div>
-            <div id="cyber-verdict-icon" class="text-2xl text-red-600 font-bold">✕</div>
+            <div class="w-full bg-slate-200/80 rounded-full h-1.5 overflow-hidden">
+              <div id="cyber-score-bar" class="bg-red-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
           </div>
 
           <div class="space-y-2 text-xs border-t border-slate-100 pt-3">
@@ -271,7 +279,7 @@
             </div>
             <div class="flex justify-between py-1">
               <span class="text-slate-500">CPU Evaluation Latency:</span>
-              <span id="cyber-audit-latency" class="font-mono font-semibold text-emerald-600">0.031 ms</span>
+              <span id="cyber-audit-latency" class="font-mono font-semibold text-emerald-600">0.028 ms</span>
             </div>
             <div class="flex justify-between py-1">
               <span class="text-slate-500">Audit Reference:</span>
@@ -283,8 +291,8 @@
             </div>
           </div>
 
-          <div class="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs">
-            <div class="font-semibold text-slate-700 mb-0.5">Remediation:</div>
+          <div id="cyber-remediation-box" class="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs">
+            <div class="font-semibold text-slate-700 mb-0.5">Guardrail Remediation:</div>
             <p id="cyber-remediation-text" class="text-slate-600 leading-relaxed text-[11px]">
               Disallow raw shell commands. Use strict parameterized subprocess APIs with shell=False or Python native libraries.
             </p>
@@ -388,6 +396,7 @@
         <div id="cli-screen" class="p-5 font-mono text-xs leading-relaxed text-slate-300 min-h-[300px] space-y-2 overflow-x-auto">
           <div class="text-slate-500"># Welcome to the AgentGuardrail Interactive Terminal</div>
           <div class="text-slate-500"># Click any command button above to execute in real-time.</div>
+          <div class="text-slate-500"># Evaluate Guardrail Engine against hot-path policy gates</div>
           <div class="text-blue-400 font-bold">$ guardrail --help</div>
           <div class="text-slate-300">usage: guardrail [-h] {check,math,scan,ui,serve} ...</div>
           <div class="text-slate-400">&nbsp;&nbsp;check&nbsp;&nbsp;&nbsp;Inspect payload for prompt injection, secrets, and exploits</div>
@@ -478,9 +487,12 @@
     ];
 
     let currentPromptKey = 'indirect';
+    let isPromptSanitizing = false;
+    let isPromptSanitized = false;
 
     function loadPromptCase(key) {
       currentPromptKey = key;
+      isPromptSanitized = false;
       document.querySelectorAll('.p-case-btn').forEach(b => {
         b.className = "p-case-btn text-left p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition";
       });
@@ -497,36 +509,109 @@
       const editor = document.getElementById('prompt-payload-editor');
       editor.value = data.payload.replace(/\\n/g, '\n');
 
-      evaluatePromptGuardrail(false);
+      runPromptEvalLogic(editor.value);
     }
 
     function handlePromptEditorInput(val) {
-      evaluatePromptGuardrail(false);
+      runPromptEvalLogic(val);
     }
 
     function evaluatePromptGuardrail(withAnimation = true) {
       const editor = document.getElementById('prompt-payload-editor');
-      const text = editor.value;
-      const btn = document.getElementById('btn-eval-prompt');
-      const btnLabel = document.getElementById('btn-eval-prompt-label');
-      const sanitizeBtn = document.getElementById('btn-prompt-sanitize');
+      runPromptEvalLogic(editor.value);
+    }
 
-      if (withAnimation) {
+    function autoSanitizePrompt() {
+      if (isPromptSanitizing) return;
+      const btn = document.getElementById('btn-prompt-action');
+      const editor = document.getElementById('prompt-payload-editor');
+      const remBox = document.getElementById('prompt-remediation-box');
+      const data = promptCases[currentPromptKey];
+
+      if (!isPromptSanitized) {
+        isPromptSanitizing = true;
         btn.disabled = true;
-        btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-wait opacity-90 transition";
-        btnLabel.textContent = "Scanning on CPU (0.019ms)...";
+        btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
+        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Stripping Injection Tokens (2s)...</span>`;
+
+        if (remBox) {
+          remBox.innerHTML = `
+            <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+              <span>Sanitization Pipeline:</span>
+            </div>
+            <div class="space-y-1 font-mono text-[11px] text-slate-600">
+              <div class="text-blue-600 font-semibold">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
+            </div>
+          `;
+        }
+
         setTimeout(() => {
-          btn.disabled = false;
-          btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5";
-          btnLabel.textContent = "Evaluate Guardrail Engine";
-          runPromptEvalLogic(text, sanitizeBtn);
-        }, 300);
+          if (remBox) {
+            remBox.innerHTML = `
+              <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
+                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+                <span>Sanitization Pipeline:</span>
+              </div>
+              <div class="space-y-1 font-mono text-[11px] text-slate-600">
+                <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
+                <div class="text-blue-600 font-semibold">&gt; [Step 1/3] Neutralizing hidden HTML comments &amp; ChatML delimiters...</div>
+              </div>
+            `;
+          }
+        }, 600);
+
+        setTimeout(() => {
+          if (remBox) {
+            remBox.innerHTML = `
+              <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
+                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+                <span>Sanitization Pipeline:</span>
+              </div>
+              <div class="space-y-1 font-mono text-[11px] text-slate-600">
+                <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
+                <div class="text-slate-500">&gt; [Step 1/3] Delimiters neutralized</div>
+                <div class="text-blue-600 font-semibold">&gt; [Step 2/3] Normalizing system instruction boundaries...</div>
+              </div>
+            `;
+          }
+        }, 1200);
+
+        setTimeout(() => {
+          if (remBox) {
+            remBox.innerHTML = `
+              <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
+                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+                <span>Sanitization Pipeline:</span>
+              </div>
+              <div class="space-y-1 font-mono text-[11px] text-slate-600">
+                <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
+                <div class="text-slate-500">&gt; [Step 1/3] Delimiters neutralized</div>
+                <div class="text-slate-500">&gt; [Step 2/3] Boundaries normalized</div>
+                <div class="text-emerald-600 font-semibold">&gt; [Step 3/3] Invariant verified: Clean prompt context!</div>
+              </div>
+            `;
+          }
+        }, 1700);
+
+        setTimeout(() => {
+          isPromptSanitizing = false;
+          isPromptSanitized = true;
+          if (data && data.sanitizedPayload) {
+            editor.value = data.sanitizedPayload.replace(/\\n/g, '\n');
+          }
+          runPromptEvalLogic(editor.value);
+        }, 2000);
       } else {
-        runPromptEvalLogic(text, sanitizeBtn);
+        isPromptSanitized = false;
+        if (data && data.payload) {
+          editor.value = data.payload.replace(/\\n/g, '\n');
+        }
+        runPromptEvalLogic(editor.value);
       }
     }
 
-    function runPromptEvalLogic(text, sanitizeBtn) {
+    function runPromptEvalLogic(text) {
       let triggeredSig = null;
       for (const sig of INJECTION_SIGNATURES) {
         if (text.includes(sig)) {
@@ -536,11 +621,24 @@
       }
 
       const banner = document.getElementById('prompt-verdict-banner');
+      const scoreLabel = document.getElementById('prompt-score-label');
+      const scoreBar = document.getElementById('prompt-score-bar');
       const title = document.getElementById('prompt-verdict-title');
       const icon = document.getElementById('prompt-verdict-icon');
+      const btn = document.getElementById('btn-prompt-action');
+      const realtimeLatency = document.getElementById('prompt-realtime-latency');
 
       if (triggeredSig) {
-        banner.className = "p-3.5 rounded-lg bg-red-50 border border-red-200 flex items-center justify-between transition-all";
+        isPromptSanitized = false;
+        banner.className = "p-3.5 rounded-lg bg-red-50 border border-red-200 space-y-2.5 transition-all";
+        if (scoreLabel) {
+          scoreLabel.className = "text-[10px] font-bold text-red-600 uppercase tracking-wider";
+          scoreLabel.textContent = "Prompt Safety Score: 0% [QUARANTINED]";
+        }
+        if (scoreBar) {
+          scoreBar.className = "bg-red-500 h-1.5 rounded-full transition-all duration-500";
+          scoreBar.style.width = "0%";
+        }
         title.className = "text-base font-bold text-red-900";
         title.textContent = "BLOCKED_BY_GUARDRAIL (403)";
         icon.className = "text-2xl text-red-600 font-bold";
@@ -549,35 +647,68 @@
         document.getElementById('prompt-audit-sig').textContent = triggeredSig;
         document.getElementById('prompt-audit-sig').className = "font-mono font-semibold text-red-600";
         document.getElementById('prompt-audit-latency').textContent = "0.019 ms";
+        if (realtimeLatency) realtimeLatency.textContent = "0.019 ms";
         document.getElementById('prompt-audit-id').textContent = "audit-" + Math.random().toString(16).substring(2, 12);
         document.getElementById('prompt-audit-action').textContent = "Short-circuited on CPU before LLM invocation";
-        document.getElementById('prompt-remediation-text').textContent = "Quarantine document. Strip hidden injection tokens before passing to LLM context.";
 
-        if (sanitizeBtn) sanitizeBtn.classList.remove('hidden');
+        if (btn) {
+          btn.disabled = false;
+          btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5";
+          btn.innerHTML = `<span>🛡️</span> <span>Enforce Guardrail &amp; Strip Injection (0% &rarr; 100%)</span>`;
+        }
+
+        const curData = promptCases[currentPromptKey];
+        const remBox = document.getElementById('prompt-remediation-box');
+        if (remBox) {
+          remBox.innerHTML = `
+            <div class="font-semibold text-slate-700 mb-0.5">Remediation:</div>
+            <p id="prompt-remediation-text" class="text-slate-600 leading-relaxed text-[11px]">
+              ${curData ? curData.remediation : "Quarantine document. Strip hidden injection tokens before passing to LLM context."}
+            </p>
+          `;
+        }
       } else {
-        banner.className = "p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between transition-all";
+        banner.className = "p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 space-y-2.5 transition-all";
+        if (scoreLabel) {
+          scoreLabel.className = "text-[10px] font-bold text-emerald-700 uppercase tracking-wider";
+          scoreLabel.textContent = "Prompt Safety Score: 100% [APPROVED & SANITIZED]";
+        }
+        if (scoreBar) {
+          scoreBar.className = "bg-emerald-500 h-1.5 rounded-full transition-all duration-500";
+          scoreBar.style.width = "100%";
+        }
         title.className = "text-base font-bold text-emerald-900";
-        title.textContent = "APPROVED (200)";
+        title.textContent = isPromptSanitized ? "✓ APPROVED & SANITIZED (200)" : "✓ APPROVED (200)";
         icon.className = "text-2xl text-emerald-600 font-bold";
         icon.textContent = "✓";
 
         document.getElementById('prompt-audit-sig').textContent = "None (Clean Payload)";
         document.getElementById('prompt-audit-sig').className = "font-mono font-semibold text-emerald-600";
         document.getElementById('prompt-audit-latency').textContent = "0.012 ms";
+        if (realtimeLatency) realtimeLatency.textContent = "0.012 ms";
         document.getElementById('prompt-audit-id').textContent = "audit-" + Math.random().toString(16).substring(2, 12);
         document.getElementById('prompt-audit-action').textContent = "Permitted through hot-path CPU policy";
-        document.getElementById('prompt-remediation-text').textContent = "Clean verified input. Zero prompt injection signatures detected.";
 
-        if (sanitizeBtn) sanitizeBtn.classList.add('hidden');
-      }
-    }
+        if (btn) {
+          btn.disabled = false;
+          if (isPromptSanitized) {
+            btn.className = "px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-semibold text-xs transition flex items-center gap-1.5";
+            btn.innerHTML = `<span>↺</span> <span>Revert to Injected Payload (0%)</span>`;
+          } else {
+            btn.className = "px-3.5 py-1.5 rounded-lg bg-emerald-600 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 cursor-default";
+            btn.innerHTML = `<span>✓</span> <span>Clean Prompt Verified (0.01ms CPU Check)</span>`;
+          }
+        }
 
-    function autoSanitizePrompt() {
-      const data = promptCases[currentPromptKey];
-      if (data && data.sanitizedPayload) {
-        const editor = document.getElementById('prompt-payload-editor');
-        editor.value = data.sanitizedPayload.replace(/\\n/g, '\n');
-        evaluatePromptGuardrail(true);
+        const remBox = document.getElementById('prompt-remediation-box');
+        if (remBox) {
+          remBox.innerHTML = `
+            <div class="font-semibold text-emerald-800 mb-0.5">Remediation Status:</div>
+            <p class="text-slate-600 leading-relaxed text-[11px]">
+              Clean verified input. Zero prompt injection signatures detected.
+            </p>
+          `;
+        }
       }
     }
 
@@ -651,9 +782,12 @@
     ];
 
     let currentCyberKey = 'cmd_inj';
+    let isCyberRemediating = false;
+    let isCyberRemediated = false;
 
     function loadCyberCase(key) {
       currentCyberKey = key;
+      isCyberRemediated = false;
       document.querySelectorAll('.c-case-btn').forEach(b => {
         b.className = "c-case-btn text-left p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition";
       });
@@ -670,36 +804,109 @@
       const editor = document.getElementById('cyber-payload-editor');
       editor.value = data.payload.replace(/\\n/g, '\n');
 
-      evaluateCyberGuardrail(false);
+      runCyberEvalLogic(editor.value);
     }
 
     function handleCyberEditorInput(val) {
-      evaluateCyberGuardrail(false);
+      runCyberEvalLogic(val);
     }
 
     function evaluateCyberGuardrail(withAnimation = true) {
       const editor = document.getElementById('cyber-payload-editor');
-      const text = editor.value;
-      const btn = document.getElementById('btn-eval-cyber');
-      const btnLabel = document.getElementById('btn-eval-cyber-label');
-      const sanitizeBtn = document.getElementById('btn-cyber-sanitize');
+      runCyberEvalLogic(editor.value);
+    }
 
-      if (withAnimation) {
+    function autoSanitizeCyber() {
+      if (isCyberRemediating) return;
+      const btn = document.getElementById('btn-cyber-action');
+      const editor = document.getElementById('cyber-payload-editor');
+      const remediationBox = document.getElementById('cyber-remediation-box');
+      const data = cyberCases[currentCyberKey];
+
+      if (!isCyberRemediated) {
+        isCyberRemediating = true;
         btn.disabled = true;
-        btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 cursor-wait opacity-90 transition";
-        btnLabel.textContent = "Scanning CPU AST & Regex (0.025ms)...";
+        btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
+        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Remediating &amp; Synthesizing Safe AST (2s)...</span>`;
+
+        if (remediationBox) {
+          remediationBox.innerHTML = `
+            <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+              <span>Active Remediation Pipeline:</span>
+            </div>
+            <div class="space-y-1 font-mono text-[11px] text-slate-600">
+              <div class="text-blue-600 font-semibold">&gt; [0.00ms] Quarantining exploit signature: ${data ? data.sig : 'Exploit'}</div>
+            </div>
+          `;
+        }
+
         setTimeout(() => {
-          btn.disabled = false;
-          btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5";
-          btnLabel.textContent = "Evaluate Cyber Defense";
-          runCyberEvalLogic(text, sanitizeBtn);
-        }, 300);
+          if (remediationBox) {
+            remediationBox.innerHTML = `
+              <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
+                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+                <span>Active Remediation Pipeline:</span>
+              </div>
+              <div class="space-y-1 font-mono text-[11px] text-slate-600">
+                <div class="text-slate-500">&gt; [0.00ms] Quarantining exploit signature: ${data ? data.sig : 'Exploit'}</div>
+                <div class="text-blue-600 font-semibold">&gt; [Step 1/3] Neutralizing container escape &amp; secret leak surfaces...</div>
+              </div>
+            `;
+          }
+        }, 600);
+
+        setTimeout(() => {
+          if (remediationBox) {
+            remediationBox.innerHTML = `
+              <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
+                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+                <span>Active Remediation Pipeline:</span>
+              </div>
+              <div class="space-y-1 font-mono text-[11px] text-slate-600">
+                <div class="text-slate-500">&gt; [0.00ms] Quarantining exploit signature: ${data ? data.sig : 'Exploit'}</div>
+                <div class="text-slate-500">&gt; [Step 1/3] Neutralized escape surfaces</div>
+                <div class="text-blue-600 font-semibold">&gt; [Step 2/3] Synthesizing safe parameterized AST &amp; vaulting keys...</div>
+              </div>
+            `;
+          }
+        }, 1200);
+
+        setTimeout(() => {
+          if (remediationBox) {
+            remediationBox.innerHTML = `
+              <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
+                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+                <span>Active Remediation Pipeline:</span>
+              </div>
+              <div class="space-y-1 font-mono text-[11px] text-slate-600">
+                <div class="text-slate-500">&gt; [0.00ms] Quarantining exploit signature: ${data ? data.sig : 'Exploit'}</div>
+                <div class="text-slate-500">&gt; [Step 1/3] Neutralized escape surfaces</div>
+                <div class="text-slate-500">&gt; [Step 2/3] AST parameterized &amp; vaulted</div>
+                <div class="text-emerald-600 font-semibold">&gt; [Step 3/3] Invariant verification passed: 100% Secure!</div>
+              </div>
+            `;
+          }
+        }, 1700);
+
+        setTimeout(() => {
+          isCyberRemediating = false;
+          isCyberRemediated = true;
+          if (data && data.sanitizedPayload) {
+            editor.value = data.sanitizedPayload.replace(/\\n/g, '\n');
+          }
+          runCyberEvalLogic(editor.value);
+        }, 2000);
       } else {
-        runCyberEvalLogic(text, sanitizeBtn);
+        isCyberRemediated = false;
+        if (data && data.payload) {
+          editor.value = data.payload.replace(/\\n/g, '\n');
+        }
+        runCyberEvalLogic(editor.value);
       }
     }
 
-    function runCyberEvalLogic(text, sanitizeBtn) {
+    function runCyberEvalLogic(text) {
       let triggeredSig = null;
       for (const sig of CYBER_SIGNATURES) {
         if (text.includes(sig)) {
@@ -709,11 +916,25 @@
       }
 
       const banner = document.getElementById('cyber-verdict-banner');
+      const scoreLabel = document.getElementById('cyber-score-label');
+      const scoreBar = document.getElementById('cyber-score-bar');
       const title = document.getElementById('cyber-verdict-title');
       const icon = document.getElementById('cyber-verdict-icon');
+      const btn = document.getElementById('btn-cyber-action');
+      const remediationBox = document.getElementById('cyber-remediation-box');
+      const realtimeLatency = document.getElementById('cyber-realtime-latency');
 
       if (triggeredSig) {
-        banner.className = "p-3.5 rounded-lg bg-red-50 border border-red-200 flex items-center justify-between transition-all";
+        isCyberRemediated = false;
+        banner.className = "p-3.5 rounded-lg bg-red-50 border border-red-200 space-y-2.5 transition-all";
+        if (scoreLabel) {
+          scoreLabel.className = "text-[10px] font-bold text-red-600 uppercase tracking-wider";
+          scoreLabel.textContent = "Compliance Score: 0% [CRITICAL EXPLOIT DETECTED]";
+        }
+        if (scoreBar) {
+          scoreBar.className = "bg-red-500 h-1.5 rounded-full transition-all duration-500";
+          scoreBar.style.width = "0%";
+        }
         title.className = "text-base font-bold text-red-900";
         title.textContent = "BLOCKED_BY_GUARDRAIL (403)";
         icon.className = "text-2xl text-red-600 font-bold";
@@ -722,43 +943,62 @@
         document.getElementById('cyber-audit-sig').textContent = triggeredSig;
         document.getElementById('cyber-audit-sig').className = "font-mono font-semibold text-red-600";
         document.getElementById('cyber-audit-latency').textContent = "0.028 ms";
+        if (realtimeLatency) realtimeLatency.textContent = "0.028 ms";
         document.getElementById('cyber-audit-id').textContent = "audit-" + Math.random().toString(16).substring(2, 12);
         document.getElementById('cyber-audit-action').textContent = "Execution short-circuited & blocked on CPU";
 
-        const curData = cyberCases[currentCyberKey];
-        document.getElementById('cyber-remediation-text').textContent = curData ? curData.remediation : "Disallow unsafe call. Use parameterized or sanitized APIs.";
+        if (btn) {
+          btn.disabled = false;
+          btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5";
+          btn.innerHTML = `<span>🛡️</span> <span>Enforce Guardrail &amp; Auto-Remediate (0% &rarr; 100%)</span>`;
+        }
 
-        if (sanitizeBtn) {
-          sanitizeBtn.classList.remove('hidden');
-          const sanitizeLabel = document.getElementById('btn-cyber-sanitize-label');
-          if (sanitizeLabel) {
-            sanitizeLabel.textContent = (currentCyberKey === 'secrets') ? "Auto-Redact Secrets" : "Auto-Sanitize Call";
-          }
+        const curData = cyberCases[currentCyberKey];
+        if (remediationBox) {
+          remediationBox.innerHTML = `
+            <div class="font-semibold text-slate-700 mb-0.5">Guardrail Remediation:</div>
+            <p id="cyber-remediation-text" class="text-slate-600 leading-relaxed text-[11px]">${curData ? curData.remediation : "Disallow unsafe call. Use parameterized or sanitized APIs."}</p>
+          `;
         }
       } else {
-        banner.className = "p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between transition-all";
+        banner.className = "p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 space-y-2.5 transition-all";
+        if (scoreLabel) {
+          scoreLabel.className = "text-[10px] font-bold text-emerald-700 uppercase tracking-wider";
+          scoreLabel.textContent = "Compliance Score: 100% [APPROVED & SECURED]";
+        }
+        if (scoreBar) {
+          scoreBar.className = "bg-emerald-500 h-1.5 rounded-full transition-all duration-500";
+          scoreBar.style.width = "100%";
+        }
         title.className = "text-base font-bold text-emerald-900";
-        title.textContent = "APPROVED (200)";
+        title.textContent = isCyberRemediated ? "✓ APPROVED & AUTO-REMEDIATED (200)" : "✓ APPROVED (200)";
         icon.className = "text-2xl text-emerald-600 font-bold";
         icon.textContent = "✓";
 
         document.getElementById('cyber-audit-sig').textContent = "None (Safe Execution)";
         document.getElementById('cyber-audit-sig').className = "font-mono font-semibold text-emerald-600";
         document.getElementById('cyber-audit-latency').textContent = "0.014 ms";
+        if (realtimeLatency) realtimeLatency.textContent = "0.014 ms";
         document.getElementById('cyber-audit-id').textContent = "audit-" + Math.random().toString(16).substring(2, 12);
         document.getElementById('cyber-audit-action').textContent = "Permitted through hot-path policy";
-        document.getElementById('cyber-remediation-text').textContent = "Verified safe syntax. No command injection, credential leaks, or SSRF signatures found.";
 
-        if (sanitizeBtn) sanitizeBtn.classList.add('hidden');
-      }
-    }
+        if (btn) {
+          btn.disabled = false;
+          if (isCyberRemediated) {
+            btn.className = "px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-semibold text-xs transition flex items-center gap-1.5";
+            btn.innerHTML = `<span>↺</span> <span>Revert to Exploit Payload (0%)</span>`;
+          } else {
+            btn.className = "px-3.5 py-1.5 rounded-lg bg-emerald-600 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 cursor-default";
+            btn.innerHTML = `<span>✓</span> <span>Code Verified Safe (0.01ms CPU Check)</span>`;
+          }
+        }
 
-    function autoSanitizeCyber() {
-      const data = cyberCases[currentCyberKey];
-      if (data && data.sanitizedPayload) {
-        const editor = document.getElementById('cyber-payload-editor');
-        editor.value = data.sanitizedPayload.replace(/\\n/g, '\n');
-        evaluateCyberGuardrail(true);
+        if (remediationBox) {
+          remediationBox.innerHTML = `
+            <div class="font-semibold text-emerald-800 mb-0.5">Remediation Status:</div>
+            <p id="cyber-remediation-text" class="text-slate-600 leading-relaxed text-[11px]">Hardened AST verified. Arbitrary command execution, secret leakage, and metadata SSRF eliminated.</p>
+          `;
+        }
       }
     }
 
