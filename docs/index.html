@@ -531,14 +531,19 @@
       if (!isPromptSanitized) {
         isPromptSanitizing = true;
         btn.disabled = true;
+
+        // Randomized 1-4s LLM inference duration
+        const durationMs = Math.floor(Math.random() * 3000) + 1000;
+        const durationSec = (durationMs / 1000).toFixed(1);
+
         btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
-        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Stripping Injection Tokens (2s)...</span>`;
+        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Sanitizing Prompt (${durationSec}s)...</span>`;
 
         if (remBox) {
           remBox.innerHTML = `
             <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
               <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-              <span>Sanitization Pipeline:</span>
+              <span>LLM Sanitization Pipeline (${durationSec}s inference):</span>
             </div>
             <div class="space-y-1 font-mono text-[11px] text-slate-600">
               <div class="text-blue-600 font-semibold">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
@@ -551,48 +556,48 @@
             remBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>Sanitization Pipeline:</span>
+                <span>LLM Sanitization Pipeline (${durationSec}s inference):</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
                 <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
-                <div class="text-blue-600 font-semibold">&gt; [Step 1/3] Neutralizing hidden HTML comments &amp; ChatML delimiters...</div>
+                <div class="text-blue-600 font-semibold">&gt; [LLM Step 1/3] Neutralizing hidden HTML comments &amp; ChatML delimiters...</div>
               </div>
             `;
           }
-        }, 600);
+        }, Math.floor(durationMs * 0.3));
 
         setTimeout(() => {
           if (remBox) {
             remBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>Sanitization Pipeline:</span>
+                <span>LLM Sanitization Pipeline (${durationSec}s inference):</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
                 <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
-                <div class="text-slate-500">&gt; [Step 1/3] Delimiters neutralized</div>
-                <div class="text-blue-600 font-semibold">&gt; [Step 2/3] Normalizing system instruction boundaries...</div>
+                <div class="text-slate-500">&gt; [LLM Step 1/3] Delimiters neutralized</div>
+                <div class="text-blue-600 font-semibold">&gt; [LLM Step 2/3] LLM context normalization &amp; boundary defense...</div>
               </div>
             `;
           }
-        }, 1200);
+        }, Math.floor(durationMs * 0.65));
 
         setTimeout(() => {
           if (remBox) {
             remBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>Sanitization Pipeline:</span>
+                <span>LLM Sanitization Pipeline (${durationSec}s inference):</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
                 <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
-                <div class="text-slate-500">&gt; [Step 1/3] Delimiters neutralized</div>
-                <div class="text-slate-500">&gt; [Step 2/3] Boundaries normalized</div>
-                <div class="text-emerald-600 font-semibold">&gt; [Step 3/3] Invariant verified: Clean prompt context!</div>
+                <div class="text-slate-500">&gt; [LLM Step 1/3] Delimiters neutralized</div>
+                <div class="text-slate-500">&gt; [LLM Step 2/3] Boundaries normalized</div>
+                <div class="text-emerald-600 font-semibold">&gt; [LLM Step 3/3] Invariant verified: Clean prompt context!</div>
               </div>
             `;
           }
-        }, 1700);
+        }, Math.floor(durationMs * 0.88));
 
         setTimeout(() => {
           isPromptSanitizing = false;
@@ -601,7 +606,7 @@
             editor.value = data.sanitizedPayload.replace(/\\n/g, '\n');
           }
           runPromptEvalLogic(editor.value);
-        }, 2000);
+        }, durationMs);
       } else {
         isPromptSanitized = false;
         if (data && data.payload) {
@@ -826,14 +831,19 @@
       if (!isCyberRemediated) {
         isCyberRemediating = true;
         btn.disabled = true;
+
+        // Randomized 1-4s LLM inference duration
+        const durationMs = Math.floor(Math.random() * 3000) + 1000;
+        const durationSec = (durationMs / 1000).toFixed(1);
+
         btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
-        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Remediating &amp; Synthesizing Safe AST (2s)...</span>`;
+        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Synthesizing Patch (${durationSec}s)...</span>`;
 
         if (remediationBox) {
           remediationBox.innerHTML = `
             <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
               <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-              <span>Active Remediation Pipeline:</span>
+              <span>LLM Remediation &amp; AST Pipeline (${durationSec}s inference):</span>
             </div>
             <div class="space-y-1 font-mono text-[11px] text-slate-600">
               <div class="text-blue-600 font-semibold">&gt; [0.00ms] Quarantining exploit signature: ${data ? data.sig : 'Exploit'}</div>
@@ -846,48 +856,48 @@
             remediationBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>Active Remediation Pipeline:</span>
+                <span>LLM Remediation &amp; AST Pipeline (${durationSec}s inference):</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
-                <div class="text-slate-500">&gt; [0.00ms] Quarantining exploit signature: ${data ? data.sig : 'Exploit'}</div>
-                <div class="text-blue-600 font-semibold">&gt; [Step 1/3] Neutralizing container escape &amp; secret leak surfaces...</div>
+                <div class="text-slate-500">&gt; [0.00ms] Quarantined exploit signature: ${data ? data.sig : 'Exploit'}</div>
+                <div class="text-blue-600 font-semibold">&gt; [LLM Step 1/3] Neutralizing container escape &amp; secret leak surfaces...</div>
               </div>
             `;
           }
-        }, 600);
+        }, Math.floor(durationMs * 0.3));
 
         setTimeout(() => {
           if (remediationBox) {
             remediationBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>Active Remediation Pipeline:</span>
+                <span>LLM Remediation &amp; AST Pipeline (${durationSec}s inference):</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
-                <div class="text-slate-500">&gt; [0.00ms] Quarantining exploit signature: ${data ? data.sig : 'Exploit'}</div>
-                <div class="text-slate-500">&gt; [Step 1/3] Neutralized escape surfaces</div>
-                <div class="text-blue-600 font-semibold">&gt; [Step 2/3] Synthesizing safe parameterized AST &amp; vaulting keys...</div>
+                <div class="text-slate-500">&gt; [0.00ms] Quarantined exploit signature: ${data ? data.sig : 'Exploit'}</div>
+                <div class="text-slate-500">&gt; [LLM Step 1/3] Neutralized escape surfaces</div>
+                <div class="text-blue-600 font-semibold">&gt; [LLM Step 2/3] LLM code generation: Synthesizing safe parameterized AST &amp; vaulting keys...</div>
               </div>
             `;
           }
-        }, 1200);
+        }, Math.floor(durationMs * 0.65));
 
         setTimeout(() => {
           if (remediationBox) {
             remediationBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>Active Remediation Pipeline:</span>
+                <span>LLM Remediation &amp; AST Pipeline (${durationSec}s inference):</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
-                <div class="text-slate-500">&gt; [0.00ms] Quarantining exploit signature: ${data ? data.sig : 'Exploit'}</div>
-                <div class="text-slate-500">&gt; [Step 1/3] Neutralized escape surfaces</div>
-                <div class="text-slate-500">&gt; [Step 2/3] AST parameterized &amp; vaulted</div>
-                <div class="text-emerald-600 font-semibold">&gt; [Step 3/3] Invariant verification passed: 100% Secure!</div>
+                <div class="text-slate-500">&gt; [0.00ms] Quarantined exploit signature: ${data ? data.sig : 'Exploit'}</div>
+                <div class="text-slate-500">&gt; [LLM Step 1/3] Neutralized escape surfaces</div>
+                <div class="text-slate-500">&gt; [LLM Step 2/3] AST parameterized &amp; vaulted</div>
+                <div class="text-emerald-600 font-semibold">&gt; [LLM Step 3/3] Invariant verification passed: 100% Secure!</div>
               </div>
             `;
           }
-        }, 1700);
+        }, Math.floor(durationMs * 0.88));
 
         setTimeout(() => {
           isCyberRemediating = false;
@@ -896,7 +906,7 @@
             editor.value = data.sanitizedPayload.replace(/\\n/g, '\n');
           }
           runCyberEvalLogic(editor.value);
-        }, 2000);
+        }, durationMs);
       } else {
         isCyberRemediated = false;
         if (data && data.payload) {
@@ -1163,39 +1173,44 @@
       if (!isAstSynthesized) {
         isAstSynthesizing = true;
         btn.disabled = true;
+
+        // Randomized 1-4s LLM inference duration
+        const durationMs = Math.floor(Math.random() * 3000) + 1000;
+        const durationSec = (durationMs / 1000).toFixed(1);
+
         btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
-        btn.innerHTML = `<svg class=\"animate-spin h-3.5 w-3.5 text-white\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\"><circle class=\"opacity-25\" cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-width=\"4\"></circle><path class=\"opacity-75\" fill=\"currentColor\" d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"></path></svg><span>Parsing AST &amp; Synthesizing (2s)...</span>`;
+        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Parsing AST &amp; Synthesizing (${durationSec}s)...</span>`;
 
         if (logBox) {
           logBox.innerHTML = `
-            <div class="text-blue-600 font-semibold animate-pulse">&gt; Step 1/3: Parsing Abstract Syntax Tree via ast.parse()...</div>
+            <div class="text-blue-600 font-semibold animate-pulse">&gt; [LLM Step 1/3] Parsing Abstract Syntax Tree via ast.parse()...</div>
           `;
         }
 
         setTimeout(() => {
           if (logBox) {
             logBox.innerHTML = `
-              <div class="text-slate-500">&gt; Step 1/3: ast.parse() syntax tree analyzed</div>
-              <div class="text-blue-600 font-semibold animate-pulse">&gt; Step 2/3: Transforming While(True) into bounded For(range(3))...</div>
+              <div class="text-slate-500">&gt; [LLM Step 1/3] ast.parse() syntax tree analyzed</div>
+              <div class="text-blue-600 font-semibold animate-pulse">&gt; [LLM Step 2/3] LLM transforming While(True) into bounded For(range(3))...</div>
             `;
           }
-        }, 700);
+        }, Math.floor(durationMs * 0.35));
 
         setTimeout(() => {
           if (logBox) {
             logBox.innerHTML = `
-              <div class="text-slate-500">&gt; Step 1/3: ast.parse() syntax tree analyzed</div>
-              <div class="text-slate-500">&gt; Step 2/3: Bounded retry loop synthesized</div>
-              <div class="text-blue-600 font-semibold animate-pulse">&gt; Step 3/3: Compiling await asyncio.sleep(0.1) coroutine...</div>
+              <div class="text-slate-500">&gt; [LLM Step 1/3] ast.parse() syntax tree analyzed</div>
+              <div class="text-slate-500">&gt; [LLM Step 2/3] Bounded retry loop synthesized</div>
+              <div class="text-blue-600 font-semibold animate-pulse">&gt; [LLM Step 3/3] Compiling await asyncio.sleep(0.1) coroutine...</div>
             `;
           }
-        }, 1400);
+        }, Math.floor(durationMs * 0.7));
 
         setTimeout(() => {
           isAstSynthesizing = false;
           isAstSynthesized = true;
           renderAstSynthesizerUI();
-        }, 2000);
+        }, durationMs);
       } else {
         isAstSynthesized = false;
         renderAstSynthesizerUI();
