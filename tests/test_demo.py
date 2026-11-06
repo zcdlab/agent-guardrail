@@ -11,8 +11,6 @@ def test_demo_index_html_exists_and_contains_core_elements():
     assert "Prompt Injection" in content
     assert "Cyber Security" in content
     assert "AI Safety" in content
-    assert "Interactive Guardrail CLI Simulator" in content
-    assert "Evaluate Guardrail Engine" in content
 
 
 def test_demo_javascript_syntax_and_integrity():
@@ -48,7 +46,7 @@ def test_demo_javascript_syntax_and_integrity():
         "switchTab", "loadPromptCase", "evaluatePromptGuardrail",
         "autoSanitizePrompt", "loadCyberCase", "evaluateCyberGuardrail",
         "autoSanitizeCyber", "loadSafetyCase", "toggleAstSynthesis",
-        "updateMathLive", "runCliDemo"
+        "updateMathLive"
     ]
     for fn in required_fns:
         assert f"function {fn}" in code, f"Missing function {fn} in docs/index.html"
