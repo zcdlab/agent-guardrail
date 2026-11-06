@@ -3,6 +3,7 @@ from pathlib import Path
 import sys
 import webbrowser
 from src.guardrails import inspect_hot_path, scan_directory, verify_retry_storm_math
+from src.llm import synthesize_patch_with_llm
 from src.models import GuardrailInput
 
 
@@ -23,6 +24,10 @@ def main(argv: list[str] | None = None) -> int:
     p_scan = sub.add_parser("scan", help="Scan repository for protected paths and policy status")
     p_scan.add_argument("path", nargs="?", default=".")
 
+    p_patch = sub.add_parser("patch", help="Synthesize safe patch from unsafe diff")
+    p_patch.add_argument("--diff", default="while True:\n    time.sleep(1)")
+    p_patch.add_argument("--llm", action="store_true", help="Call LLM for real-time synthesis")
+
     sub.add_parser("ui", help="Open Control Plane Web UI")
     sub.add_parser("serve", help="Start FastMCP server")
 
@@ -36,6 +41,9 @@ def main(argv: list[str] | None = None) -> int:
     elif args.cmd == "scan":
         res = scan_directory(Path(args.path))
         print(f"Scan complete: {len(res['protected_paths_found'])} protected paths found | Guardrails Active")
+    elif args.cmd == "patch":
+        code, ok, engine = synthesize_patch_with_llm(args.diff, force_llm=args.llm)
+        print(f"Synthesized Safe Patch [Engine: {engine}] (Valid AST: {ok}):\n{code}")
     elif args.cmd == "ui":
         ui_path = Path(__file__).resolve().parent.parent / "docs" / "index.html"
         webbrowser.open(f"file://{ui_path}")

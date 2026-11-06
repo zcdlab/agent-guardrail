@@ -65,9 +65,29 @@ guardrail scan .
 # Start native FastMCP agent server
 guardrail serve
 
+# Synthesize safe patch (calls LLM in normal workflow, or uses pre-calculated AST heuristic in demo/offline)
+guardrail patch --diff "+while True: time.sleep(1)" --llm
+
 # Open local Control Plane Web UI
 guardrail ui
 ```
+
+---
+
+## ⚙️ Execution Modes: Production LLM Workflow vs. Browser Demo
+
+`agent-guardrail` is designed with a strict decoupling between production inference and zero-dependency evaluation:
+
+1. **Production / CLI Workflow (Dynamic LLM Calls)**:
+   In normal operation, the engine can call state-of-the-art LLMs (Gemini, OpenAI, Anthropic, or local Ollama) to synthesize safe patches and sanitize prompt injections:
+   ```bash
+   cp .env.example .env
+   # Configure OPENAI_API_KEY, GEMINI_API_KEY, or custom LLM_API_BASE
+   guardrail patch --diff "+while True: time.sleep(1)" --llm
+   ```
+
+2. **Interactive Browser Demo (Pre-Calculated Golden Fixtures)**:
+   The web control plane (`docs/index.html` on GitHub Pages) runs 100% client-side with pre-calculated golden fixtures and zero external API dependencies, ensuring instant, deterministic, and safe evaluation without exposing credentials.
 
 ---
 
