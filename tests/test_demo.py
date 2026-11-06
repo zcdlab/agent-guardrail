@@ -52,3 +52,11 @@ def test_demo_javascript_syntax_and_integrity():
     ]
     for fn in required_fns:
         assert f"function {fn}" in code, f"Missing function {fn} in docs/index.html"
+
+
+def test_demo_diff_renderer_functions_declared():
+    doc = Path("docs/index.html")
+    content = doc.read_text()
+    assert "function computeUnifiedDiff" in content, "Missing function computeUnifiedDiff"
+    assert "function renderDiffTable" in content, "Missing function renderDiffTable"
+

@@ -505,6 +505,117 @@
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    function computeUnifiedDiff(originalText, sanitizedText, isSanitized, signatures) {
+      const origLines = (originalText || '').replace(/\r\n/g, '\n').split('\n');
+      const cleanLines = (sanitizedText || '').replace(/\r\n/g, '\n').split('\n');
+      const rows = [];
+
+      if (!isSanitized) {
+        origLines.forEach((line, idx) => {
+          const isBad = (signatures || []).some(sig => sig && sig !== 'None' && line.includes(sig));
+          rows.push({
+            type: isBad ? 'del' : 'neutral',
+            oldNum: idx + 1,
+            newNum: isBad ? '' : idx + 1,
+            sign: isBad ? '-' : ' ',
+            text: line
+          });
+        });
+        return rows;
+      }
+
+      let prefixLen = 0;
+      while (prefixLen < origLines.length && prefixLen < cleanLines.length && origLines[prefixLen] === cleanLines[prefixLen]) {
+        prefixLen++;
+      }
+
+      let suffixLen = 0;
+      while (
+        suffixLen < (origLines.length - prefixLen) &&
+        suffixLen < (cleanLines.length - prefixLen) &&
+        origLines[origLines.length - 1 - suffixLen] === cleanLines[cleanLines.length - 1 - suffixLen]
+      ) {
+        suffixLen++;
+      }
+
+      for (let i = 0; i < prefixLen; i++) {
+        rows.push({
+          type: 'neutral',
+          oldNum: i + 1,
+          newNum: i + 1,
+          sign: ' ',
+          text: origLines[i]
+        });
+      }
+
+      for (let i = prefixLen; i < origLines.length - suffixLen; i++) {
+        rows.push({
+          type: 'del',
+          oldNum: i + 1,
+          newNum: '',
+          sign: '-',
+          text: origLines[i]
+        });
+      }
+
+      for (let j = prefixLen; j < cleanLines.length - suffixLen; j++) {
+        rows.push({
+          type: 'add',
+          oldNum: '',
+          newNum: j + 1,
+          sign: '+',
+          text: cleanLines[j]
+        });
+      }
+
+      const origSuffixStart = origLines.length - suffixLen;
+      const cleanSuffixStart = cleanLines.length - suffixLen;
+      for (let k = 0; k < suffixLen; k++) {
+        rows.push({
+          type: 'neutral',
+          oldNum: origSuffixStart + k + 1,
+          newNum: cleanSuffixStart + k + 1,
+          sign: ' ',
+          text: origLines[origSuffixStart + k]
+        });
+      }
+
+      return rows;
+    }
+
+    function renderDiffTable(rows) {
+      if (!rows || rows.length === 0) return '<div class="p-4 text-xs text-slate-400">Empty payload</div>';
+      let html = '<div class="font-mono text-xs overflow-x-auto select-text divide-y divide-slate-100">';
+      for (const row of rows) {
+        let rowClass = 'flex items-stretch hover:bg-slate-50/50 transition-colors';
+        let numClass = 'w-10 flex-shrink-0 text-right pr-2 text-[10px] text-slate-400 select-none py-1 border-r border-slate-200/60 bg-slate-50/70';
+        let signClass = 'w-6 flex-shrink-0 text-center font-bold select-none py-1';
+        let textClass = 'flex-1 pl-3 pr-4 py-1 whitespace-pre-wrap break-all';
+
+        if (row.type === 'del') {
+          rowClass += ' bg-red-50 text-red-900 font-medium';
+          numClass = 'w-10 flex-shrink-0 text-right pr-2 text-[10px] text-red-400 select-none py-1 border-r border-red-200 bg-red-100/50';
+          signClass += ' text-red-600 bg-red-100/60';
+        } else if (row.type === 'add') {
+          rowClass += ' bg-emerald-50 text-emerald-950 font-medium';
+          numClass = 'w-10 flex-shrink-0 text-right pr-2 text-[10px] text-emerald-500 select-none py-1 border-r border-emerald-200 bg-emerald-100/50';
+          signClass += ' text-emerald-600 bg-emerald-100/60';
+        } else {
+          rowClass += ' bg-white text-slate-800';
+          signClass += ' text-slate-300';
+        }
+
+        const displayNum = row.oldNum || row.newNum || '';
+        html += `<div class="${rowClass}">` +
+          `<span class="${numClass}">${displayNum}</span>` +
+          `<span class="${signClass}">${row.sign}</span>` +
+          `<span class="${textClass}">${escapeHtml(row.text)}</span>` +
+          `</div>`;
+      }
+      html += '</div>';
+      return html;
+    }
+
     function getHighlightedPromptHtml(text) {
       if (!text) return '';
       if (text.includes('<!-- SYSTEM:')) {
