@@ -71,4 +71,17 @@ def test_demo_tab2_diff_container_present():
     assert 'id="cyber-diff-container"' in content, "Missing #cyber-diff-container in docs/index.html"
 
 
+def test_demo_compute_diff_neutral_before_sanitize():
+    content = Path("docs/index.html").read_text()
+    # Ensure computeUnifiedDiff marks lines as neutral when !isSanitized
+    assert "if (!isSanitized)" in content
+    # Ensure it does not assign del or - before fix
+    m = re.search(r"if \(!isSanitized\) \{(.*?)\n    \}", content, re.DOTALL)
+    assert m is not None
+    block = m.group(1)
+    assert "type: isBad" not in block, "Should not mark lines as del before clicking fix"
+    assert "sign: isBad" not in block, "Should not mark sign as - before clicking fix"
+
+
+
 

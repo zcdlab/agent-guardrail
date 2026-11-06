@@ -403,12 +403,11 @@
 
       if (!isSanitized) {
         origLines.forEach((line, idx) => {
-          const isBad = (signatures || []).some(sig => sig && sig !== 'None' && line.includes(sig));
           rows.push({
-            type: isBad ? 'del' : 'neutral',
+            type: 'neutral',
             oldNum: idx + 1,
-            newNum: isBad ? '' : idx + 1,
-            sign: isBad ? '-' : ' ',
+            newNum: idx + 1,
+            sign: ' ',
             text: line
           });
         });
