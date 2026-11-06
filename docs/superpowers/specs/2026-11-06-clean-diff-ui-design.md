@@ -36,3 +36,4 @@ The user reported that the current UI contains too much visual noise (callout ba
 3. **Status & Action Footer**:
    - Status badge: `BLOCKED (403)` / `APPROVED (200)` with CPU latency tag (e.g., `0.02ms`).
    - Action button: `Enforce Guardrail & Strip Injection` / `Revert to Injected Payload`.
+
