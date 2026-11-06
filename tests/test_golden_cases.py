@@ -20,3 +20,4 @@ def test_guardrail_golden_cases_integrity():
         v = inspect_hot_path(GuardrailInput(action="test", target_path="input.txt", payload=case["payload"]))
         assert not v.allowed
         assert case["category"] in v.reason
+
