@@ -59,7 +59,12 @@
       {
         "id": "retry_storm_budget",
         "name": "Retry-Storm Deadline Budget Gate",
-        "params": {"timeout_ms": 600, "max_retries": 2, "backoff_ms": 100, "caller_deadline_ms": 2000},
+        "params": {
+          "timeout_ms": 600,
+          "max_retries": 2,
+          "backoff_ms": 100,
+          "caller_deadline_ms": 2000
+        },
         "expected_result": "PASS",
         "worst_case_ms": 2000
       },
@@ -73,4 +78,3 @@
     ]
   }
 }
-
