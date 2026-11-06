@@ -50,25 +50,38 @@ Hot-path filter preventing agent-synthesized exploits and credential leaks:
 
 ## 💻 Standalone CLI Usage
 
-The package installs the standalone binary `guardrail`:
+The package installs the standalone binary `guardrail` (also available as `agent-guardrail`):
 
 ```bash
-# Verify retry-storm deadline budget
-guardrail math --timeout 600 --retries 2 --backoff 100 --deadline 2000
+# 1. Recursively scan any repository for security exploits, secrets, and injection vulnerabilities
+guardrail scan /path/to/my-repo
 
-# Inspect payload for prompt injection, secrets, and exploits
+# 2. Scan repository with strict CI/CD gate (exit code 1 if violations found)
+guardrail scan /path/to/my-repo --strict
+
+# 3. Output machine-readable JSON report
+guardrail scan /path/to/my-repo --json
+
+# 4. Initialize zero-trust .agent-policy.yaml in target repository
+guardrail init /path/to/my-repo
+
+# 5. Inspect active guardrail policy rules
+guardrail policy /path/to/my-repo
+
+# 6. Check a single file or inline payload for security vulnerabilities
+guardrail check --file src/worker.py --strict
 guardrail check --payload "os.system('rm -rf /')"
 
-# Scan repository for protected paths and policy status
-guardrail scan .
+# 7. Mathematically verify retry-storm deadline budget
+guardrail math --timeout 600 --retries 2 --backoff 100 --deadline 2000
 
-# Start native FastMCP agent server
-guardrail serve
-
-# Synthesize safe patch (calls LLM in normal workflow, or uses pre-calculated AST heuristic in demo/offline)
+# 8. Synthesize safe async patch for blocking concurrency loops
 guardrail patch --diff "+while True: time.sleep(1)" --llm
 
-# Open local Control Plane Web UI
+# 9. Start native FastMCP server for IDE / coding agent integration
+guardrail serve
+
+# 10. Open local Control Plane Web UI
 guardrail ui
 ```
 
