@@ -66,3 +66,9 @@ def test_demo_tab1_diff_container_present():
     assert 'id="prompt-diff-container"' in content, "Missing #prompt-diff-container in docs/index.html"
 
 
+def test_demo_tab2_diff_container_present():
+    content = Path("docs/index.html").read_text()
+    assert 'id="cyber-diff-container"' in content, "Missing #cyber-diff-container in docs/index.html"
+
+
+
