@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>AgentGuardrail — High-Assurance AI Agent Guardrail Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -492,60 +495,18 @@
           signClass += ' text-emerald-600 bg-emerald-100/60';
         } else {
           rowClass += ' bg-white text-slate-800';
-          signClass += ' text-slate-300';
+          signClass += ' text-transparent';
         }
 
         const displayNum = row.oldNum || row.newNum || '';
         html += `<div class="${rowClass}">` +
           `<span class="${numClass}">${displayNum}</span>` +
-          `<span class="${signClass}">${row.sign}</span>` +
+          `<span class="${signClass}">${row.sign || '&nbsp;'}</span>` +
           `<span class="${textClass}">${escapeHtml(row.text)}</span>` +
           `</div>`;
       }
       html += '</div>';
       return html;
-    }
-
-    function getHighlightedPromptHtml(text) {
-      if (!text) return '';
-      if (text.includes('<!-- SYSTEM:')) {
-        const startIdx = text.indexOf('<!-- SYSTEM:');
-        const endIdx = text.indexOf('-->', startIdx);
-        const closeIdx = endIdx !== -1 ? endIdx + 3 : text.length;
-        const before = escapeHtml(text.substring(0, startIdx));
-        const bad = escapeHtml(text.substring(startIdx, closeIdx));
-        const after = escapeHtml(text.substring(closeIdx));
-        return before + '<span class="text-red-600 font-semibold">' + bad + '</span>' + after;
-      }
-      if (text.includes('<|im_start|>') || text.includes('<|im_end|>')) {
-        const tagIdx = text.indexOf('<|im_end|>') !== -1 ? text.indexOf('<|im_end|>') : text.indexOf('<|im_start|>');
-        const before = escapeHtml(text.substring(0, tagIdx));
-        const bad = escapeHtml(text.substring(tagIdx));
-        return before + '<span class="text-red-600 font-semibold">' + bad + '</span>';
-      }
-      if (text.includes('DAN_MODE')) {
-        const needle = 'DAN_MODE';
-        const startIdx = text.indexOf(needle);
-        const before = escapeHtml(text.substring(0, startIdx));
-        const bad = escapeHtml(text.substring(startIdx));
-        return before + '<span class="text-red-600 font-semibold">' + bad + '</span>';
-      }
-      const lines = text.split('\n');
-      return lines.map(line => {
-        const isBad = INJECTION_SIGNATURES.some(sig => line.includes(sig));
-        if (isBad) {
-          return '<span class="text-red-600 font-semibold">' + escapeHtml(line) + '</span>';
-        }
-        return escapeHtml(line);
-      }).join('\n');
-    }
-
-    function setPromptText(text) {
-      currentPromptText = text;
-      const editor = document.getElementById('prompt-payload-editor');
-      if (editor) {
-        editor.innerHTML = getHighlightedPromptHtml(text);
-      }
     }
 
     function loadPromptCase(key) {
@@ -735,26 +696,6 @@
     let isCyberRemediating = false;
     let isCyberRemediated = false;
     let currentCyberText = '';
-
-    function getHighlightedCyberHtml(text) {
-      if (!text) return '';
-      const lines = text.split('\n');
-      return lines.map(line => {
-        const isBad = CYBER_SIGNATURES.some(sig => line.includes(sig));
-        if (isBad) {
-          return '<span class="text-red-600 font-semibold">' + escapeHtml(line) + '</span>';
-        }
-        return escapeHtml(line);
-      }).join('\n');
-    }
-
-    function setCyberText(text) {
-      currentCyberText = text;
-      const editor = document.getElementById('cyber-payload-editor');
-      if (editor) {
-        editor.innerHTML = getHighlightedCyberHtml(text);
-      }
-    }
 
     function loadCyberCase(key) {
       currentCyberKey = key;
