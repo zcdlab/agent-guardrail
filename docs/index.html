@@ -49,9 +49,6 @@
       <button onclick="switchTab('tab-ai-safety')" id="btn-tab-ai-safety" class="tab-btn py-3.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium whitespace-nowrap transition-colors">
         3. AI Safety &amp; Action Guardrails
       </button>
-      <button onclick="switchTab('tab-cli')" id="btn-tab-cli" class="tab-btn py-3.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium whitespace-nowrap transition-colors">
-        4. Interactive CLI Simulator
-      </button>
     </div>
   </nav>
 
@@ -248,65 +245,6 @@
 
       <!-- Dynamic Interactive Safety Body -->
       <div id="safety-interactive-body"></div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- TAB 4: INTERACTIVE CLI SIMULATOR           -->
-    <!-- ========================================== -->
-    <section id="tab-cli" class="tab-pane hidden space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div>
-          <h2 class="text-xl font-bold text-slate-900">Interactive Guardrail CLI Simulator</h2>
-          <p class="text-sm text-slate-600 mt-0.5">Execute standalone CLI subcommands against the live guardrail engine.</p>
-        </div>
-      </div>
-
-      <!-- Command Pills -->
-      <div class="flex flex-wrap gap-2 text-xs font-mono">
-        <button onclick="runCliDemo('math-pass')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-blue-500 hover:text-blue-600 shadow-sm transition">
-          $ guardrail math --timeout 600 --retries 2 --backoff 100 --deadline 2000
-        </button>
-        <button onclick="runCliDemo('math-fail')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-red-500 hover:text-red-600 shadow-sm transition">
-          $ guardrail math --timeout 1000 --retries 1 --backoff 1 --deadline 2000
-        </button>
-        <button onclick="runCliDemo('check-prompt')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-red-500 hover:text-red-600 shadow-sm transition">
-          $ guardrail check --file prompt.txt --payload "SYSTEM_PROMPT_OVERRIDE"
-        </button>
-        <button onclick="runCliDemo('check-cyber')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-red-500 hover:text-red-600 shadow-sm transition">
-          $ guardrail check --file script.py --payload "os.system('rm -rf /')"
-        </button>
-        <button onclick="runCliDemo('scan')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-emerald-500 hover:text-emerald-600 shadow-sm transition">
-          $ guardrail scan .
-        </button>
-        <button onclick="runCliDemo('eval')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-purple-500 hover:text-purple-600 shadow-sm transition">
-          $ pytest -v
-        </button>
-      </div>
-
-      <!-- High-Contrast Terminal Output -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-md">
-        <div class="bg-slate-800/80 px-4 py-2 border-b border-slate-700 flex items-center justify-between text-xs text-slate-400">
-          <div class="flex items-center space-x-2">
-            <span class="h-2.5 w-2.5 rounded-full bg-red-500 inline-block"></span>
-            <span class="h-2.5 w-2.5 rounded-full bg-amber-500 inline-block"></span>
-            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 inline-block"></span>
-            <span class="font-mono text-slate-300 ml-2">guardrail CLI v0.4.2</span>
-          </div>
-          <span class="font-mono text-[11px] text-slate-500">zsh session</span>
-        </div>
-        <div id="cli-screen" class="p-5 font-mono text-xs leading-relaxed text-slate-300 min-h-[300px] space-y-2 overflow-x-auto">
-          <div class="text-slate-500"># Welcome to the AgentGuardrail Interactive Terminal</div>
-          <div class="text-slate-500"># Click any command button above to execute in real-time.</div>
-          <div class="text-slate-500"># Evaluate Guardrail Engine against hot-path policy gates</div>
-          <div class="text-blue-400 font-bold">$ guardrail --help</div>
-          <div class="text-slate-300">usage: guardrail [-h] {check,math,scan,ui,serve} ...</div>
-          <div class="text-slate-400">&nbsp;&nbsp;check&nbsp;&nbsp;&nbsp;Inspect payload for prompt injection, secrets, and exploits</div>
-          <div class="text-slate-400">&nbsp;&nbsp;math&nbsp;&nbsp;&nbsp;&nbsp;Verify retry-storm budget ($T \times (R + 1) + B \times R \le D$)</div>
-          <div class="text-slate-400">&nbsp;&nbsp;scan&nbsp;&nbsp;&nbsp;&nbsp;Scan repository for protected paths and policies</div>
-          <div class="text-slate-400">&nbsp;&nbsp;ui&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Open Control Plane Web UI</div>
-          <div class="text-slate-400">&nbsp;&nbsp;serve&nbsp;&nbsp;&nbsp;Start native FastMCP agent server</div>
-        </div>
-      </div>
     </section>
 
   </main>
@@ -1210,65 +1148,6 @@
         bannerEl.className = "p-3.5 rounded-lg bg-red-50 border border-red-200 flex items-center justify-between";
         badgeEl.className = "text-base font-bold text-red-900";
         badgeEl.textContent = "✕ FAILED: RETRY STORM RISK";
-      }
-    }
-
-    // ==========================================
-    // DATA: CLI SIMULATOR
-    // ==========================================
-    function runCliDemo(type) {
-      const screen = document.getElementById('cli-screen');
-      if (type === 'math-pass') {
-        screen.innerHTML = `
-          <div class="text-blue-400 font-bold">$ guardrail math --timeout 600 --retries 2 --backoff 100 --deadline 2000</div>
-          <div class="text-slate-300">&gt; Formula: 600 * (2 + 1) + (100 * 2) = 2000ms &le; 2000ms</div>
-          <div class="text-emerald-400 font-bold">&check; PASS: Budget valid: 2000ms &le; 2000ms</div>
-          <div class="text-slate-500">Latency: 0.003 ms | Status: Deterministic Proof Approved</div>
-        `;
-      } else if (type === 'math-fail') {
-        screen.innerHTML = `
-          <div class="text-blue-400 font-bold">$ guardrail math --timeout 1000 --retries 1 --backoff 1 --deadline 2000</div>
-          <div class="text-slate-300">&gt; Formula: 1000 * (1 + 1) + (1 * 1) = 2001ms &gt; 2000ms</div>
-          <div class="text-red-400 font-bold">&cross; FAIL: Retry storm risk: worst-case budget 2001ms exceeds deadline 2000ms</div>
-          <div class="text-slate-400">Remediation: reduce timeout &le; 999ms or reduce max retries to 0</div>
-        `;
-      } else if (type === 'check-prompt') {
-        screen.innerHTML = `
-          <div class="text-blue-400 font-bold">$ guardrail check --file prompt.txt --payload "SYSTEM_PROMPT_OVERRIDE"</div>
-          <div class="text-red-400 font-bold">&gt; HOT-PATH CPU GUARDRAIL TRIGGERED!</div>
-          <div class="text-red-300">&cross; Prompt Injection signature detected: SYSTEM_PROMPT_OVERRIDE</div>
-          <div class="text-slate-400">&gt; Latency: 0.019 ms | Short-circuited before LLM invocation</div>
-          <div class="text-red-400 font-bold">Verdict: BLOCKED</div>
-          <div class="text-slate-500">Audit ID: audit-7fa9b210c812</div>
-        `;
-      } else if (type === 'check-cyber') {
-        screen.innerHTML = `
-          <div class="text-blue-400 font-bold">$ guardrail check --file script.py --payload "os.system('rm -rf /')"</div>
-          <div class="text-red-400 font-bold">&gt; HOT-PATH CPU CYBER DEFENSE TRIGGERED!</div>
-          <div class="text-red-300">&cross; Cyber Security signature detected: os.system(</div>
-          <div class="text-slate-400">&gt; Threat vector: Arbitrary OS Command Injection</div>
-          <div class="text-red-400 font-bold">Verdict: BLOCKED</div>
-          <div class="text-slate-500">Latency: 0.031 ms | Container protected against shell escape</div>
-        `;
-      } else if (type === 'scan') {
-        screen.innerHTML = `
-          <div class="text-blue-400 font-bold">$ guardrail scan .</div>
-          <div class="text-slate-300">&gt; Scanning repository for sensitive paths &amp; guardrail policies...</div>
-          <div class="text-slate-300">&gt; Sensitive directories quarantined: infra/prod/, security/, .env</div>
-          <div class="text-slate-300">&gt; Generating .agent-policy.yaml zero-trust guardrail contract</div>
-          <div class="text-emerald-400 font-bold">Scan complete: 5 protected paths found | Guardrails Active</div>
-          <div class="text-slate-400">&check; Zero-trust hot-path CPU policies active and enforced</div>
-        `;
-      } else if (type === 'eval') {
-        screen.innerHTML = `
-          <div class="text-blue-400 font-bold">$ pytest -v</div>
-          <div class="text-slate-300">Executing test suite across all guardrail pillars...</div>
-          <div class="text-slate-400">&gt; prompt_injection_guard: 100% blocked, avg 0.012 ms</div>
-          <div class="text-slate-400">&gt; cybersecurity_sandbox: 100% blocked, avg 0.018 ms</div>
-          <div class="text-slate-400">&gt; secret_leak_scrubber: 100% redacted, avg 0.015 ms</div>
-          <div class="text-slate-400">&gt; retry_storm_math: 100% verified, avg 0.003 ms</div>
-          <div class="text-emerald-400 font-bold">&check; Golden Benchmark: 41/41 Passed (100.0%) | Total: 2.39s</div>
-        `;
       }
     }
 
