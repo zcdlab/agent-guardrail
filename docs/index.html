@@ -534,16 +534,15 @@
 
         // Randomized 1-4s LLM inference duration
         const durationMs = Math.floor(Math.random() * 3000) + 1000;
-        const durationSec = (durationMs / 1000).toFixed(1);
 
         btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
-        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Sanitizing Prompt (${durationSec}s)...</span>`;
+        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Sanitizing Prompt...</span>`;
 
         if (remBox) {
           remBox.innerHTML = `
             <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
               <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-              <span>LLM Sanitization Pipeline (${durationSec}s inference):</span>
+              <span>LLM Sanitization Pipeline:</span>
             </div>
             <div class="space-y-1 font-mono text-[11px] text-slate-600">
               <div class="text-blue-600 font-semibold">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
@@ -556,7 +555,7 @@
             remBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>LLM Sanitization Pipeline (${durationSec}s inference):</span>
+                <span>LLM Sanitization Pipeline:</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
                 <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
@@ -571,7 +570,7 @@
             remBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>LLM Sanitization Pipeline (${durationSec}s inference):</span>
+                <span>LLM Sanitization Pipeline:</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
                 <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
@@ -587,7 +586,7 @@
             remBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>LLM Sanitization Pipeline (${durationSec}s inference):</span>
+                <span>LLM Sanitization Pipeline:</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
                 <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
@@ -834,16 +833,15 @@
 
         // Randomized 1-4s LLM inference duration
         const durationMs = Math.floor(Math.random() * 3000) + 1000;
-        const durationSec = (durationMs / 1000).toFixed(1);
 
         btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
-        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Synthesizing Patch (${durationSec}s)...</span>`;
+        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Synthesizing Patch...</span>`;
 
         if (remediationBox) {
           remediationBox.innerHTML = `
             <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
               <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-              <span>LLM Remediation &amp; AST Pipeline (${durationSec}s inference):</span>
+              <span>LLM Remediation &amp; AST Pipeline:</span>
             </div>
             <div class="space-y-1 font-mono text-[11px] text-slate-600">
               <div class="text-blue-600 font-semibold">&gt; [0.00ms] Quarantining exploit signature: ${data ? data.sig : 'Exploit'}</div>
@@ -856,7 +854,7 @@
             remediationBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>LLM Remediation &amp; AST Pipeline (${durationSec}s inference):</span>
+                <span>LLM Remediation &amp; AST Pipeline:</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
                 <div class="text-slate-500">&gt; [0.00ms] Quarantined exploit signature: ${data ? data.sig : 'Exploit'}</div>
@@ -871,7 +869,7 @@
             remediationBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>LLM Remediation &amp; AST Pipeline (${durationSec}s inference):</span>
+                <span>LLM Remediation &amp; AST Pipeline:</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
                 <div class="text-slate-500">&gt; [0.00ms] Quarantined exploit signature: ${data ? data.sig : 'Exploit'}</div>
@@ -887,7 +885,7 @@
             remediationBox.innerHTML = `
               <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>LLM Remediation &amp; AST Pipeline (${durationSec}s inference):</span>
+                <span>LLM Remediation &amp; AST Pipeline:</span>
               </div>
               <div class="space-y-1 font-mono text-[11px] text-slate-600">
                 <div class="text-slate-500">&gt; [0.00ms] Quarantined exploit signature: ${data ? data.sig : 'Exploit'}</div>
@@ -1176,10 +1174,9 @@
 
         // Randomized 1-4s LLM inference duration
         const durationMs = Math.floor(Math.random() * 3000) + 1000;
-        const durationSec = (durationMs / 1000).toFixed(1);
 
         btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
-        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Parsing AST &amp; Synthesizing (${durationSec}s)...</span>`;
+        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Parsing AST &amp; Synthesizing...</span>`;
 
         if (logBox) {
           logBox.innerHTML = `
