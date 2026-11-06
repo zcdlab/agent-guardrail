@@ -53,28 +53,16 @@
   </nav>
 
   <!-- Main Container -->
-  <main class="flex-1 max-w-6xl mx-auto w-full px-6 py-8 space-y-6">
-
-    <!-- Architecture Info Callout: Demo Fixtures vs. Normal LLM Workflow -->
-    <div class="bg-blue-50/70 border border-blue-200/80 rounded-xl p-3.5 flex items-start justify-between gap-3 text-xs text-blue-900 shadow-sm">
-      <div class="flex items-start gap-2.5">
-        <span class="text-base leading-none">💡</span>
-        <div>
-          <span class="font-bold text-blue-950">Execution Architecture:</span>
-          This web demo evaluates test cases using <span class="font-semibold text-blue-800">pre-calculated golden fixtures</span> for zero-dependency browser execution.
-          In your <span class="font-semibold text-blue-800">normal CLI / SDK workflow</span>, the engine seamlessly calls real LLMs (Gemini, OpenAI, Anthropic, or local models) by setting <code class="font-mono bg-blue-100/80 px-1 py-0.5 rounded text-blue-900 text-[11px]">OPENAI_API_KEY</code> or <code class="font-mono bg-blue-100/80 px-1 py-0.5 rounded text-blue-900 text-[11px]">GEMINI_API_KEY</code> in <code class="font-mono bg-blue-100/80 px-1 py-0.5 rounded text-blue-900 text-[11px]">.env</code> or passing <code class="font-mono bg-blue-100/80 px-1 py-0.5 rounded text-blue-900 text-[11px]">guardrail patch --llm</code>.
-        </div>
-      </div>
-    </div>
+  <main class="flex-1 max-w-6xl mx-auto w-full px-6 py-6 space-y-6">
 
     <!-- ========================================== -->
     <!-- TAB 1: PROMPT INJECTIONS & JAILBREAKS      -->
     <!-- ========================================== -->
-    <section id="tab-prompt" class="tab-pane space-y-6">
+    <section id="tab-prompt" class="tab-pane space-y-5">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h2 class="text-xl font-bold text-slate-900">Prompt Injection &amp; Jailbreak Guardrail</h2>
-          <p class="text-sm text-slate-600 mt-0.5">Scans untrusted pull requests, issues, and prompt templates on the CPU before model inference.</p>
+          <p class="text-sm text-slate-600 mt-0.5">Scans untrusted pull requests, issues, and prompt templates on CPU before model inference.</p>
         </div>
       </div>
 
@@ -109,82 +97,33 @@
         </div>
       </div>
 
-      <!-- Focused When to Use Callout -->
-      <div class="bg-blue-50/80 border border-blue-200 rounded-xl p-4">
-        <div class="flex items-center gap-2 text-xs font-bold text-blue-900 uppercase tracking-wide">
-          <span>💡</span> When to use this guardrail
-        </div>
-        <p id="prompt-when-desc" class="text-sm text-slate-700 mt-1 leading-relaxed">
-          Use when autonomous coding agents read external repository issues, pull request descriptions, or markdown documentation where attackers hide zero-font or HTML-comment injection payloads to hijack the LLM into exfiltrating credentials.
-        </p>
-      </div>
-
-      <!-- Two-Column Showcase with Live Code Editor -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <!-- Left: Payload Viewer with Bad Prompt in Red Font -->
-        <div class="lg:col-span-7 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
-          <div class="bg-slate-100/90 px-4 py-2.5 border-b border-slate-200 flex justify-between items-center text-xs">
-            <div class="flex items-center space-x-2">
-              <span class="font-mono text-slate-900 font-bold" id="prompt-file-name">PR_DESCRIPTION.md</span>
-              <span class="text-[10px] font-mono text-slate-500 bg-slate-200 px-2 py-0.5 rounded" id="prompt-vector-tag">Vector: Indirect HTML Comment</span>
-            </div>
+      <!-- Clean Unified Diff Card -->
+      <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
+        <!-- Diff Header -->
+        <div class="bg-slate-100/90 px-4 py-3 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2 text-xs">
+          <div class="flex items-center space-x-2">
+            <span class="font-mono text-slate-900 font-bold" id="prompt-file-name">PR_DESCRIPTION.md</span>
+            <span class="text-[10px] font-mono text-slate-600 bg-slate-200/80 px-2 py-0.5 rounded" id="prompt-vector-tag">Vector: Indirect HTML Comment</span>
           </div>
-
-          <div id="prompt-payload-editor" class="w-full font-mono text-xs text-slate-800 bg-white p-4 leading-relaxed min-h-[220px] max-h-[360px] overflow-y-auto block whitespace-pre-wrap select-text"></div>
-
-          <div class="bg-slate-50 px-4 py-2.5 border-t border-slate-200 flex flex-wrap justify-between items-center gap-2">
-            <div class="text-[10px] text-slate-500 font-mono flex items-center gap-1.5">
-              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Hot-Path CPU Engine &bull; Instant keystroke scan (<span id="prompt-realtime-latency" class="text-slate-700 font-semibold">0.019 ms</span>)</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <button onclick="autoSanitizePrompt()" id="btn-prompt-action" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5">
-                <span>🛡️</span> <span id="btn-prompt-action-label">Enforce Guardrail &amp; Strip Injection (0% &rarr; 100%)</span>
-              </button>
-            </div>
+          <div class="flex items-center gap-2">
+            <span id="prompt-verdict-pill" class="px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 flex items-center gap-1.5">
+              <span>✕</span> <span>BLOCKED (0.019 ms)</span>
+            </span>
           </div>
         </div>
 
-        <!-- Right: Guardrail Verdict -->
-        <div class="lg:col-span-5 bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-          <!-- Compliance Score Gauge Banner -->
-          <div id="prompt-verdict-banner" class="p-3.5 rounded-lg bg-red-50 border border-red-200 space-y-2.5 transition-all">
-            <div class="flex items-center justify-between">
-              <div>
-                <div id="prompt-score-label" class="text-[10px] font-bold text-red-600 uppercase tracking-wider">Prompt Safety Score: 0% [QUARANTINED]</div>
-                <div id="prompt-verdict-title" class="text-base font-bold text-red-900">BLOCKED_BY_GUARDRAIL (403)</div>
-              </div>
-              <div id="prompt-verdict-icon" class="text-2xl text-red-600 font-bold">✕</div>
-            </div>
-            <div class="w-full bg-slate-200/80 rounded-full h-1.5 overflow-hidden">
-              <div id="prompt-score-bar" class="bg-red-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-            </div>
-          </div>
+        <!-- Diff Body -->
+        <div id="prompt-diff-container" class="w-full bg-white max-h-[440px] overflow-y-auto"></div>
 
-          <div class="space-y-2 text-xs border-t border-slate-100 pt-3">
-            <div class="flex justify-between py-1">
-              <span class="text-slate-500">Trigger Signature:</span>
-              <span id="prompt-audit-sig" class="font-mono font-semibold text-red-600">IGNORE_ALL_INSTRUCTIONS</span>
-            </div>
-            <div class="flex justify-between py-1">
-              <span class="text-slate-500">CPU Scan Latency:</span>
-              <span id="prompt-audit-latency" class="font-mono font-semibold text-emerald-600">0.019 ms</span>
-            </div>
-            <div class="flex justify-between py-1">
-              <span class="text-slate-500">Audit Reference:</span>
-              <span id="prompt-audit-id" class="font-mono text-slate-700">audit-7f19a0bc812</span>
-            </div>
-            <div class="flex justify-between py-1">
-              <span class="text-slate-500">Action:</span>
-              <span id="prompt-audit-action" class="text-slate-800">Short-circuited on CPU before LLM invocation</span>
-            </div>
+        <!-- Diff Footer: Action & Summary -->
+        <div class="bg-slate-50 px-4 py-3 border-t border-slate-200 flex flex-wrap justify-between items-center gap-3">
+          <div class="text-xs text-slate-600 flex items-center gap-2">
+            <span id="prompt-diff-summary" class="font-medium text-slate-700">1 malicious injection vector quarantined.</span>
           </div>
-
-          <div id="prompt-remediation-box" class="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs">
-            <div class="font-semibold text-slate-700 mb-0.5">Remediation:</div>
-            <p id="prompt-remediation-text" class="text-slate-600 leading-relaxed text-[11px]">
-              Quarantine document. Strip hidden HTML comments and notify repository administrator of attempted indirect prompt injection.
-            </p>
+          <div class="flex items-center gap-2">
+            <button onclick="autoSanitizePrompt()" id="btn-prompt-action" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-2">
+              <span>🛡️</span> <span>Enforce Guardrail &amp; Strip Injection</span>
+            </button>
           </div>
         </div>
       </div>
@@ -660,9 +599,11 @@
 
     function loadPromptCase(key) {
       currentPromptKey = key;
+      isPromptSanitizing = false;
       isPromptSanitized = false;
-      document.querySelectorAll('.p-case-btn').forEach(b => {
-        b.className = "p-case-btn text-left p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition";
+
+      document.querySelectorAll('.p-case-btn').forEach(btn => {
+        btn.className = "p-case-btn text-left p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition";
       });
       const activeBtn = document.getElementById('btn-p-' + key);
       if (activeBtn) {
@@ -670,215 +611,103 @@
       }
 
       const data = promptCases[key];
-      document.getElementById('prompt-when-desc').textContent = data.when;
-      document.getElementById('prompt-file-name').textContent = data.file;
-      document.getElementById('prompt-vector-tag').textContent = data.vector;
+      const fnEl = document.getElementById('prompt-file-name');
+      const tagEl = document.getElementById('prompt-vector-tag');
+      if (fnEl && data) fnEl.textContent = data.file;
+      if (tagEl && data) tagEl.textContent = data.vector;
 
-      setPromptText(data.payload.replace(/\\n/g, '\n'));
-      runPromptEvalLogic(currentPromptText);
+      currentPromptText = data ? data.payload.replace(/\\n/g, '\n') : '';
+      renderPromptDiff();
     }
 
-    function handlePromptEditorInput(val) {
-      setPromptText(val);
-      runPromptEvalLogic(currentPromptText);
+    function renderPromptDiff() {
+      const data = promptCases[currentPromptKey];
+      if (!data) return;
+
+      const origText = data.payload.replace(/\\n/g, '\n');
+      const cleanText = data.sanitizedPayload.replace(/\\n/g, '\n');
+      const container = document.getElementById('prompt-diff-container');
+      const pill = document.getElementById('prompt-verdict-pill');
+      const summary = document.getElementById('prompt-diff-summary');
+      const btn = document.getElementById('btn-prompt-action');
+
+      const isBenign = currentPromptKey === 'benign';
+      const rows = computeUnifiedDiff(origText, cleanText, isPromptSanitized, INJECTION_SIGNATURES);
+      if (container) {
+        container.innerHTML = renderDiffTable(rows);
+      }
+
+      if (isBenign) {
+        if (pill) {
+          pill.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 flex items-center gap-1.5";
+          pill.innerHTML = `<span>✓</span> <span>APPROVED (0.012 ms)</span>`;
+        }
+        if (summary) {
+          summary.innerHTML = `<span class="text-emerald-700 font-semibold">Verified Clean Input</span> &bull; 0 injection signatures detected.`;
+        }
+        if (btn) {
+          btn.disabled = true;
+          btn.className = "px-4 py-1.5 rounded-lg bg-emerald-600 text-white font-semibold text-xs transition flex items-center gap-2 cursor-default opacity-80";
+          btn.innerHTML = `<span>✓</span> <span>Clean Prompt Verified</span>`;
+        }
+      } else if (!isPromptSanitized) {
+        if (pill) {
+          pill.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 flex items-center gap-1.5";
+          pill.innerHTML = `<span>✕</span> <span>BLOCKED (0.019 ms)</span>`;
+        }
+        if (summary) {
+          summary.innerHTML = `<span class="text-red-600 font-semibold">Quarantined:</span> ${escapeHtml(data.sig)} detected in prompt.`;
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.className = "px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-2";
+          btn.innerHTML = `<span>🛡️</span> <span>Enforce Guardrail &amp; Strip Injection</span>`;
+        }
+      } else {
+        if (pill) {
+          pill.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 flex items-center gap-1.5";
+          pill.innerHTML = `<span>✓</span> <span>APPROVED &amp; SANITIZED (200)</span>`;
+        }
+        if (summary) {
+          summary.innerHTML = `<span class="text-emerald-700 font-semibold">Sanitized Context:</span> Showing diff (<span class="text-red-600 font-bold">- stripped</span>, <span class="text-emerald-600 font-bold">+ safe</span>).`;
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.className = "px-4 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-semibold text-xs transition flex items-center gap-2";
+          btn.innerHTML = `<span>↺</span> <span>Revert to Injected Payload</span>`;
+        }
+      }
     }
 
     function evaluatePromptGuardrail(withAnimation = true) {
-      runPromptEvalLogic(currentPromptText);
+      renderPromptDiff();
     }
 
     function autoSanitizePrompt() {
       if (isPromptSanitizing) return;
       const btn = document.getElementById('btn-prompt-action');
-      const editor = document.getElementById('prompt-payload-editor');
-      const remBox = document.getElementById('prompt-remediation-box');
-      const data = promptCases[currentPromptKey];
+      const summary = document.getElementById('prompt-diff-summary');
 
       if (!isPromptSanitized) {
         isPromptSanitizing = true;
-        btn.disabled = true;
-
-        // Randomized 1-4s LLM inference duration
-        const durationMs = Math.floor(Math.random() * 3000) + 1000;
-
-        btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
-        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Sanitizing Prompt...</span>`;
-
-        if (remBox) {
-          remBox.innerHTML = `
-            <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
-              <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-              <span>LLM Sanitization Pipeline:</span>
-            </div>
-            <div class="space-y-1 font-mono text-[11px] text-slate-600">
-              <div class="text-blue-600 font-semibold">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
-            </div>
-          `;
+        if (btn) {
+          btn.disabled = true;
+          btn.className = "px-4 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-sm flex items-center gap-2 cursor-wait opacity-90 transition";
+          btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>LLM Sanitizing Prompt...</span>`;
+        }
+        if (summary) {
+          summary.textContent = "Neutralizing hidden comments and role spoofing delimiters (1-4s simulated LLM latency)...";
         }
 
-        setTimeout(() => {
-          if (remBox) {
-            remBox.innerHTML = `
-              <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
-                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>LLM Sanitization Pipeline:</span>
-              </div>
-              <div class="space-y-1 font-mono text-[11px] text-slate-600">
-                <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
-                <div class="text-blue-600 font-semibold">&gt; [LLM Step 1/3] Neutralizing hidden HTML comments &amp; ChatML delimiters...</div>
-              </div>
-            `;
-          }
-        }, Math.floor(durationMs * 0.3));
-
-        setTimeout(() => {
-          if (remBox) {
-            remBox.innerHTML = `
-              <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
-                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>LLM Sanitization Pipeline:</span>
-              </div>
-              <div class="space-y-1 font-mono text-[11px] text-slate-600">
-                <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
-                <div class="text-slate-500">&gt; [LLM Step 1/3] Delimiters neutralized</div>
-                <div class="text-blue-600 font-semibold">&gt; [LLM Step 2/3] LLM context normalization &amp; boundary defense...</div>
-              </div>
-            `;
-          }
-        }, Math.floor(durationMs * 0.65));
-
-        setTimeout(() => {
-          if (remBox) {
-            remBox.innerHTML = `
-              <div class="font-semibold text-blue-700 mb-1 flex items-center gap-1.5">
-                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>LLM Sanitization Pipeline:</span>
-              </div>
-              <div class="space-y-1 font-mono text-[11px] text-slate-600">
-                <div class="text-slate-500">&gt; [0.00ms] Quarantining prompt injection vector: ${data ? data.sig : 'Injection'}</div>
-                <div class="text-slate-500">&gt; [LLM Step 1/3] Delimiters neutralized</div>
-                <div class="text-slate-500">&gt; [LLM Step 2/3] Boundaries normalized</div>
-                <div class="text-emerald-600 font-semibold">&gt; [LLM Step 3/3] Invariant verified: Clean prompt context!</div>
-              </div>
-            `;
-          }
-        }, Math.floor(durationMs * 0.88));
-
+        const durationMs = Math.floor(Math.random() * 3000) + 1000;
         setTimeout(() => {
           isPromptSanitizing = false;
           isPromptSanitized = true;
-          if (data && data.sanitizedPayload) {
-            setPromptText(data.sanitizedPayload.replace(/\\n/g, '\n'));
-          }
-          runPromptEvalLogic(currentPromptText);
+          renderPromptDiff();
         }, durationMs);
       } else {
         isPromptSanitized = false;
-        if (data && data.payload) {
-          setPromptText(data.payload.replace(/\\n/g, '\n'));
-        }
-        runPromptEvalLogic(currentPromptText);
-      }
-    }
-
-    function runPromptEvalLogic(text) {
-      let triggeredSig = null;
-      for (const sig of INJECTION_SIGNATURES) {
-        if (text.includes(sig)) {
-          triggeredSig = sig;
-          break;
-        }
-      }
-
-      const banner = document.getElementById('prompt-verdict-banner');
-      const scoreLabel = document.getElementById('prompt-score-label');
-      const scoreBar = document.getElementById('prompt-score-bar');
-      const title = document.getElementById('prompt-verdict-title');
-      const icon = document.getElementById('prompt-verdict-icon');
-      const btn = document.getElementById('btn-prompt-action');
-      const realtimeLatency = document.getElementById('prompt-realtime-latency');
-
-      if (triggeredSig) {
-        isPromptSanitized = false;
-        banner.className = "p-3.5 rounded-lg bg-red-50 border border-red-200 space-y-2.5 transition-all";
-        if (scoreLabel) {
-          scoreLabel.className = "text-[10px] font-bold text-red-600 uppercase tracking-wider";
-          scoreLabel.textContent = "Prompt Safety Score: 0% [QUARANTINED]";
-        }
-        if (scoreBar) {
-          scoreBar.className = "bg-red-500 h-1.5 rounded-full transition-all duration-500";
-          scoreBar.style.width = "0%";
-        }
-        title.className = "text-base font-bold text-red-900";
-        title.textContent = "BLOCKED_BY_GUARDRAIL (403)";
-        icon.className = "text-2xl text-red-600 font-bold";
-        icon.textContent = "✕";
-
-        document.getElementById('prompt-audit-sig').textContent = triggeredSig;
-        document.getElementById('prompt-audit-sig').className = "font-mono font-semibold text-red-600";
-        document.getElementById('prompt-audit-latency').textContent = "0.019 ms";
-        if (realtimeLatency) realtimeLatency.textContent = "0.019 ms";
-        document.getElementById('prompt-audit-id').textContent = "audit-" + Math.random().toString(16).substring(2, 12);
-        document.getElementById('prompt-audit-action').textContent = "Short-circuited on CPU before LLM invocation";
-
-        if (btn) {
-          btn.disabled = false;
-          btn.className = "px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5";
-          btn.innerHTML = `<span>🛡️</span> <span>Enforce Guardrail &amp; Strip Injection (0% &rarr; 100%)</span>`;
-        }
-
-        const curData = promptCases[currentPromptKey];
-        const remBox = document.getElementById('prompt-remediation-box');
-        if (remBox) {
-          remBox.innerHTML = `
-            <div class="font-semibold text-slate-700 mb-0.5">Remediation:</div>
-            <p id="prompt-remediation-text" class="text-slate-600 leading-relaxed text-[11px]">
-              ${curData ? curData.remediation : "Quarantine document. Strip hidden injection tokens before passing to LLM context."}
-            </p>
-          `;
-        }
-      } else {
-        banner.className = "p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 space-y-2.5 transition-all";
-        if (scoreLabel) {
-          scoreLabel.className = "text-[10px] font-bold text-emerald-700 uppercase tracking-wider";
-          scoreLabel.textContent = "Prompt Safety Score: 100% [APPROVED & SANITIZED]";
-        }
-        if (scoreBar) {
-          scoreBar.className = "bg-emerald-500 h-1.5 rounded-full transition-all duration-500";
-          scoreBar.style.width = "100%";
-        }
-        title.className = "text-base font-bold text-emerald-900";
-        title.textContent = isPromptSanitized ? "✓ APPROVED & SANITIZED (200)" : "✓ APPROVED (200)";
-        icon.className = "text-2xl text-emerald-600 font-bold";
-        icon.textContent = "✓";
-
-        document.getElementById('prompt-audit-sig').textContent = "None (Clean Payload)";
-        document.getElementById('prompt-audit-sig').className = "font-mono font-semibold text-emerald-600";
-        document.getElementById('prompt-audit-latency').textContent = "0.012 ms";
-        if (realtimeLatency) realtimeLatency.textContent = "0.012 ms";
-        document.getElementById('prompt-audit-id').textContent = "audit-" + Math.random().toString(16).substring(2, 12);
-        document.getElementById('prompt-audit-action').textContent = "Permitted through hot-path CPU policy";
-
-        if (btn) {
-          btn.disabled = false;
-          if (isPromptSanitized) {
-            btn.className = "px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-semibold text-xs transition flex items-center gap-1.5";
-            btn.innerHTML = `<span>↺</span> <span>Revert to Injected Payload (0%)</span>`;
-          } else {
-            btn.className = "px-3.5 py-1.5 rounded-lg bg-emerald-600 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 cursor-default";
-            btn.innerHTML = `<span>✓</span> <span>Clean Prompt Verified (0.01ms CPU Check)</span>`;
-          }
-        }
-
-        const remBox = document.getElementById('prompt-remediation-box');
-        if (remBox) {
-          remBox.innerHTML = `
-            <div class="font-semibold text-emerald-800 mb-0.5">Remediation Status:</div>
-            <p class="text-slate-600 leading-relaxed text-[11px]">
-              Clean verified input. Zero prompt injection signatures detected.
-            </p>
-          `;
-        }
+        renderPromptDiff();
       }
     }
 

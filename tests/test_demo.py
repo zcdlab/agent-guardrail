@@ -60,3 +60,9 @@ def test_demo_diff_renderer_functions_declared():
     assert "function computeUnifiedDiff" in content, "Missing function computeUnifiedDiff"
     assert "function renderDiffTable" in content, "Missing function renderDiffTable"
 
+
+def test_demo_tab1_diff_container_present():
+    content = Path("docs/index.html").read_text()
+    assert 'id="prompt-diff-container"' in content, "Missing #prompt-diff-container in docs/index.html"
+
+
