@@ -34,3 +34,4 @@ def test_synthesize_patch_with_mocked_llm(monkeypatch):
 
 def test_cli_patch_command():
     assert cli_main(["patch", "--diff", "+while True:\n+    time.sleep(1)"]) == 0
+

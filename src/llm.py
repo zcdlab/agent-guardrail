@@ -57,3 +57,4 @@ def synthesize_patch_with_llm(diff: str, force_llm: bool = False) -> tuple[str, 
                 pass
     code, ok = synthesize_safe_patch(diff)
     return code, ok, "precalculated_ast_heuristic"
+
