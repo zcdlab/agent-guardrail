@@ -121,19 +121,29 @@
 
       <!-- Two-Column Showcase with Live Code Editor -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <!-- Left: Live Editable Input -->
-        <div class="lg:col-span-7 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
-          <div class="bg-slate-100/90 px-4 py-2.5 border-b border-slate-200 flex justify-between items-center text-xs">
+        <!-- Left: Live Editable Input with Bad Prompt Highlighting -->
+        <div id="prompt-editor-card" class="lg:col-span-7 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col transition-all">
+          <div class="bg-slate-100/90 px-4 py-2 border-b border-slate-200 flex justify-between items-center text-xs">
             <div class="flex items-center space-x-2">
               <span class="font-mono text-slate-900 font-bold" id="prompt-file-name">PR_DESCRIPTION.md</span>
               <span class="text-[10px] font-mono text-slate-500 bg-slate-200 px-2 py-0.5 rounded" id="prompt-vector-tag">Vector: Indirect HTML Comment</span>
             </div>
-            <span class="text-[11px] font-medium text-blue-600 flex items-center gap-1">
-              <span>✏️</span> Live Interactive Editor
-            </span>
+            <div class="flex items-center gap-1 bg-white p-0.5 rounded border border-slate-200 text-[11px]">
+              <button type="button" onclick="setPromptViewMode('highlight')" id="btn-prompt-view-highlight" class="px-2.5 py-1 rounded font-semibold bg-red-100 text-red-800 border border-red-300 flex items-center gap-1.5 transition">
+                <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                <span>Threat Highlight (Red)</span>
+              </button>
+              <button type="button" onclick="setPromptViewMode('raw')" id="btn-prompt-view-raw" class="px-2.5 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition">
+                <span>Raw Text Editor</span>
+              </button>
+            </div>
           </div>
 
-          <textarea id="prompt-payload-editor" spellcheck="false" oninput="handlePromptEditorInput(this.value)" class="w-full font-mono text-xs text-slate-800 bg-white p-4 border-0 focus:ring-0 outline-none resize-none leading-relaxed min-h-[220px] max-h-[360px] overflow-y-auto block"></textarea>
+          <!-- Highlight View (Default: Bad prompt highlighted in vivid red) -->
+          <div id="prompt-payload-highlight-container" class="w-full font-mono text-xs text-slate-800 bg-white p-4 leading-relaxed min-h-[220px] max-h-[360px] overflow-y-auto block whitespace-pre-wrap break-words"></div>
+
+          <!-- Raw Textarea Editor (Hidden when in highlight mode) -->
+          <textarea id="prompt-payload-editor" spellcheck="false" oninput="handlePromptEditorInput(this.value)" class="w-full font-mono text-xs text-slate-800 bg-white p-4 border-0 focus:ring-0 outline-none resize-none leading-relaxed min-h-[220px] max-h-[360px] overflow-y-auto hidden"></textarea>
 
           <div class="bg-slate-50 px-4 py-2.5 border-t border-slate-200 flex flex-wrap justify-between items-center gap-2">
             <div class="text-[10px] text-slate-500 font-mono flex items-center gap-1.5">
@@ -243,18 +253,29 @@
 
       <!-- Two-Column Showcase with Live Code Editor -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div class="lg:col-span-7 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
-          <div class="bg-slate-100/90 px-4 py-2.5 border-b border-slate-200 flex justify-between items-center text-xs">
+        <!-- Left: Live Editable Input with Threat Highlighting -->
+        <div id="cyber-editor-card" class="lg:col-span-7 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col transition-all">
+          <div class="bg-slate-100/90 px-4 py-2 border-b border-slate-200 flex justify-between items-center text-xs">
             <div class="flex items-center space-x-2">
               <span class="font-mono text-slate-900 font-bold" id="cyber-file-name">src/scripts/deploy_helper.py</span>
               <span class="text-[10px] font-mono text-slate-500 bg-slate-200 px-2 py-0.5 rounded" id="cyber-vector-tag">Threat: Remote Code Execution</span>
             </div>
-            <span class="text-[11px] font-medium text-blue-600 flex items-center gap-1">
-              <span>✏️</span> Live Interactive Editor
-            </span>
+            <div class="flex items-center gap-1 bg-white p-0.5 rounded border border-slate-200 text-[11px]">
+              <button type="button" onclick="setCyberViewMode('highlight')" id="btn-cyber-view-highlight" class="px-2.5 py-1 rounded font-semibold bg-red-100 text-red-800 border border-red-300 flex items-center gap-1.5 transition">
+                <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                <span>Threat Highlight (Red)</span>
+              </button>
+              <button type="button" onclick="setCyberViewMode('raw')" id="btn-cyber-view-raw" class="px-2.5 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition">
+                <span>Raw Text Editor</span>
+              </button>
+            </div>
           </div>
 
-          <textarea id="cyber-payload-editor" spellcheck="false" oninput="handleCyberEditorInput(this.value)" class="w-full font-mono text-xs text-slate-800 bg-white p-4 border-0 focus:ring-0 outline-none resize-none leading-relaxed min-h-[220px] max-h-[360px] overflow-y-auto block"></textarea>
+          <!-- Highlight View (Default: Bad code / secrets highlighted in vivid red) -->
+          <div id="cyber-payload-highlight-container" class="w-full font-mono text-xs text-slate-800 bg-white p-4 leading-relaxed min-h-[220px] max-h-[360px] overflow-y-auto block whitespace-pre-wrap break-words"></div>
+
+          <!-- Raw Textarea Editor (Hidden when in highlight mode) -->
+          <textarea id="cyber-payload-editor" spellcheck="false" oninput="handleCyberEditorInput(this.value)" class="w-full font-mono text-xs text-slate-800 bg-white p-4 border-0 focus:ring-0 outline-none resize-none leading-relaxed min-h-[220px] max-h-[360px] overflow-y-auto hidden"></textarea>
 
           <div class="bg-slate-50 px-4 py-2.5 border-t border-slate-200 flex flex-wrap justify-between items-center gap-2">
             <div class="text-[10px] text-slate-500 font-mono flex items-center gap-1.5">
@@ -501,6 +522,118 @@
     let currentPromptKey = 'indirect';
     let isPromptSanitizing = false;
     let isPromptSanitized = false;
+    let currentPromptViewMode = 'highlight';
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function setPromptViewMode(mode) {
+      currentPromptViewMode = mode;
+      const highlightBox = document.getElementById('prompt-payload-highlight-container');
+      const editorBox = document.getElementById('prompt-payload-editor');
+      const btnHighlight = document.getElementById('btn-prompt-view-highlight');
+      const btnRaw = document.getElementById('btn-prompt-view-raw');
+
+      if (mode === 'highlight') {
+        if (highlightBox) highlightBox.classList.remove('hidden');
+        if (editorBox) editorBox.classList.add('hidden');
+        if (btnHighlight) {
+          btnHighlight.className = "px-2.5 py-1 rounded font-semibold bg-red-100 text-red-800 border border-red-300 flex items-center gap-1.5 transition";
+        }
+        if (btnRaw) {
+          btnRaw.className = "px-2.5 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition";
+        }
+      } else {
+        if (highlightBox) highlightBox.classList.add('hidden');
+        if (editorBox) editorBox.classList.remove('hidden');
+        if (btnHighlight) {
+          btnHighlight.className = "px-2.5 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
+        }
+        if (btnRaw) {
+          btnRaw.className = "px-2.5 py-1 rounded font-semibold bg-blue-100 text-blue-800 border border-blue-300 transition";
+        }
+      }
+    }
+
+    function renderPromptHighlight(text) {
+      const container = document.getElementById('prompt-payload-highlight-container');
+      if (!container) return;
+
+      let hasBad = false;
+      for (const sig of INJECTION_SIGNATURES) {
+        if (text.includes(sig)) {
+          hasBad = true;
+          break;
+        }
+      }
+
+      if (!hasBad) {
+        container.innerHTML = `
+          <div class="mb-3 p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-center gap-1.5">
+            <span class="font-bold">&check;</span>
+            <span>Clean Prompt Payload &bull; Zero prompt injection vectors detected</span>
+          </div>
+          <div class="text-slate-800 font-mono text-xs whitespace-pre-wrap">${escapeHtml(text)}</div>
+        `;
+        return;
+      }
+
+      let html = '';
+      if (text.includes('<!-- SYSTEM:')) {
+        const startIdx = text.indexOf('<!-- SYSTEM:');
+        const endIdx = text.indexOf('-->', startIdx);
+        const closeIdx = endIdx !== -1 ? endIdx + 3 : text.length;
+        const before = text.substring(0, startIdx);
+        const bad = text.substring(startIdx, closeIdx);
+        const after = text.substring(closeIdx);
+
+        html = `
+          <div class="text-slate-800 font-mono text-xs whitespace-pre-wrap">${escapeHtml(before)}</div>
+          <div class="my-2.5 p-3 rounded-lg bg-red-50 border-2 border-red-500 text-red-950 font-mono text-xs shadow-sm">
+            <div class="flex items-center gap-2 text-[11px] font-bold text-red-700 uppercase tracking-wider mb-1.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+              <span>&cross; MALICIOUS PROMPT INJECTION (HIGHLIGHTED RED / QUARANTINED):</span>
+            </div>
+            <div class="bg-red-100/90 text-red-900 p-2.5 rounded border border-red-200 font-bold whitespace-pre-wrap break-words leading-relaxed">${escapeHtml(bad)}</div>
+          </div>
+          <div class="text-slate-800 font-mono text-xs whitespace-pre-wrap">${escapeHtml(after)}</div>
+        `;
+      } else if (text.includes('<|im_start|>') || text.includes('<|im_end|>')) {
+        const tagIdx = text.indexOf('<|im_end|>') !== -1 ? text.indexOf('<|im_end|>') : text.indexOf('<|im_start|>');
+        const before = text.substring(0, tagIdx);
+        const bad = text.substring(tagIdx);
+
+        html = `
+          <div class="text-slate-800 font-mono text-xs whitespace-pre-wrap">${escapeHtml(before)}</div>
+          <div class="my-2.5 p-3 rounded-lg bg-red-50 border-2 border-red-500 text-red-950 font-mono text-xs shadow-sm">
+            <div class="flex items-center gap-2 text-[11px] font-bold text-red-700 uppercase tracking-wider mb-1.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+              <span>&cross; MALICIOUS ROLE SPOOFING &amp; CONTROL TOKENS (HIGHLIGHTED RED / QUARANTINED):</span>
+            </div>
+            <div class="bg-red-100/90 text-red-900 p-2.5 rounded border border-red-200 font-bold whitespace-pre-wrap break-words leading-relaxed">${escapeHtml(bad)}</div>
+          </div>
+        `;
+      } else {
+        const lines = text.split('\n');
+        const renderedLines = lines.map(line => {
+          const isLineBad = INJECTION_SIGNATURES.some(sig => line.includes(sig));
+          if (isLineBad) {
+            return `
+              <div class="my-1.5 p-2 rounded-md bg-red-100/90 border-l-4 border-red-600 text-red-900 font-bold text-xs leading-relaxed">
+                <span class="text-[10px] font-bold text-red-700 uppercase mr-1.5">[&cross; BAD PROMPT INJECTION]:</span>
+                ${escapeHtml(line)}
+              </div>
+            `;
+          }
+          return `<div class="text-slate-800 leading-relaxed">${escapeHtml(line)}</div>`;
+        });
+        html = renderedLines.join('');
+      }
+
+      container.innerHTML = html;
+    }
 
     function loadPromptCase(key) {
       currentPromptKey = key;
@@ -628,6 +761,9 @@
     }
 
     function runPromptEvalLogic(text) {
+      renderPromptHighlight(text);
+      const promptCard = document.getElementById('prompt-editor-card');
+
       let triggeredSig = null;
       for (const sig of INJECTION_SIGNATURES) {
         if (text.includes(sig)) {
@@ -645,6 +781,9 @@
       const realtimeLatency = document.getElementById('prompt-realtime-latency');
 
       if (triggeredSig) {
+        if (promptCard) {
+          promptCard.className = "lg:col-span-7 bg-white border-2 border-red-400 rounded-xl overflow-hidden shadow-sm flex flex-col ring-2 ring-red-100 transition-all";
+        }
         isPromptSanitized = false;
         banner.className = "p-3.5 rounded-lg bg-red-50 border border-red-200 space-y-2.5 transition-all";
         if (scoreLabel) {
@@ -684,6 +823,9 @@
           `;
         }
       } else {
+        if (promptCard) {
+          promptCard.className = "lg:col-span-7 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col transition-all";
+        }
         banner.className = "p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 space-y-2.5 transition-all";
         if (scoreLabel) {
           scoreLabel.className = "text-[10px] font-bold text-emerald-700 uppercase tracking-wider";
@@ -800,6 +942,74 @@
     let currentCyberKey = 'cmd_inj';
     let isCyberRemediating = false;
     let isCyberRemediated = false;
+    let currentCyberViewMode = 'highlight';
+
+    function setCyberViewMode(mode) {
+      currentCyberViewMode = mode;
+      const highlightBox = document.getElementById('cyber-payload-highlight-container');
+      const editorBox = document.getElementById('cyber-payload-editor');
+      const btnHighlight = document.getElementById('btn-cyber-view-highlight');
+      const btnRaw = document.getElementById('btn-cyber-view-raw');
+
+      if (mode === 'highlight') {
+        if (highlightBox) highlightBox.classList.remove('hidden');
+        if (editorBox) editorBox.classList.add('hidden');
+        if (btnHighlight) {
+          btnHighlight.className = "px-2.5 py-1 rounded font-semibold bg-red-100 text-red-800 border border-red-300 flex items-center gap-1.5 transition";
+        }
+        if (btnRaw) {
+          btnRaw.className = "px-2.5 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition";
+        }
+      } else {
+        if (highlightBox) highlightBox.classList.add('hidden');
+        if (editorBox) editorBox.classList.remove('hidden');
+        if (btnHighlight) {
+          btnHighlight.className = "px-2.5 py-1 rounded font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
+        }
+        if (btnRaw) {
+          btnRaw.className = "px-2.5 py-1 rounded font-semibold bg-blue-100 text-blue-800 border border-blue-300 transition";
+        }
+      }
+    }
+
+    function renderCyberHighlight(text) {
+      const container = document.getElementById('cyber-payload-highlight-container');
+      if (!container) return;
+
+      let hasBad = false;
+      for (const sig of CYBER_SIGNATURES) {
+        if (text.includes(sig)) {
+          hasBad = true;
+          break;
+        }
+      }
+
+      if (!hasBad) {
+        container.innerHTML = `
+          <div class="mb-3 p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-center gap-1.5">
+            <span class="font-bold">&check;</span>
+            <span>Clean Code &bull; Zero exploit signatures or credential leaks</span>
+          </div>
+          <div class="text-slate-800 font-mono text-xs whitespace-pre-wrap">${escapeHtml(text)}</div>
+        `;
+        return;
+      }
+
+      const lines = text.split('\n');
+      const renderedLines = lines.map(line => {
+        const isLineBad = CYBER_SIGNATURES.some(sig => line.includes(sig));
+        if (isLineBad) {
+          return `
+            <div class="my-1.5 p-2 rounded-md bg-red-100/90 border-l-4 border-red-600 text-red-900 font-bold text-xs leading-relaxed">
+              <span class="text-[10px] font-bold text-red-700 uppercase mr-1.5">[&cross; MALICIOUS CODE / SECRET LEAK]:</span>
+              ${escapeHtml(line)}
+            </div>
+          `;
+        }
+        return `<div class="text-slate-800 leading-relaxed">${escapeHtml(line)}</div>`;
+      });
+      container.innerHTML = renderedLines.join('');
+    }
 
     function loadCyberCase(key) {
       currentCyberKey = key;
@@ -927,6 +1137,9 @@
     }
 
     function runCyberEvalLogic(text) {
+      renderCyberHighlight(text);
+      const cyberCard = document.getElementById('cyber-editor-card');
+
       let triggeredSig = null;
       for (const sig of CYBER_SIGNATURES) {
         if (text.includes(sig)) {
@@ -945,6 +1158,9 @@
       const realtimeLatency = document.getElementById('cyber-realtime-latency');
 
       if (triggeredSig) {
+        if (cyberCard) {
+          cyberCard.className = "lg:col-span-7 bg-white border-2 border-red-400 rounded-xl overflow-hidden shadow-sm flex flex-col ring-2 ring-red-100 transition-all";
+        }
         isCyberRemediated = false;
         banner.className = "p-3.5 rounded-lg bg-red-50 border border-red-200 space-y-2.5 transition-all";
         if (scoreLabel) {
@@ -981,6 +1197,9 @@
           `;
         }
       } else {
+        if (cyberCard) {
+          cyberCard.className = "lg:col-span-7 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col transition-all";
+        }
         banner.className = "p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 space-y-2.5 transition-all";
         if (scoreLabel) {
           scoreLabel.className = "text-[10px] font-bold text-emerald-700 uppercase tracking-wider";
