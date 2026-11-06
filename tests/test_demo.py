@@ -83,5 +83,12 @@ def test_demo_compute_diff_neutral_before_sanitize():
     assert "sign: isBad" not in block, "Should not mark sign as - before clicking fix"
 
 
+def test_demo_bad_words_red_font_highlighted():
+    content = Path("docs/index.html").read_text()
+    assert "highlightBadWordsInLine" in content
+    assert "text-red-600 font-semibold" in content
+
+
+
 
 

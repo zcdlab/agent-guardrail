@@ -399,6 +399,30 @@
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    function highlightBadWordsInLine(line, signatures) {
+      if (!line) return '';
+      const escaped = escapeHtml(line);
+      if (!signatures || signatures.length === 0) return escaped;
+
+      // Highlight bad prompt injection lines and cyber signatures with red font color only
+      if (line.includes('<!-- SYSTEM:') || line.includes('attacker.com') || (line.includes('-->') && (line.includes('leak') || line.includes('base64')))) {
+        return `<span class="text-red-600 font-semibold">${escaped}</span>`;
+      }
+      if (line.includes('<|im_start|>') || line.includes('<|im_end|>') || line.includes('unrestricted') || line.includes('disabled all guardrails')) {
+        return `<span class="text-red-600 font-semibold">${escaped}</span>`;
+      }
+      if (line.includes('DAN_MODE') || line.includes('ignore standard safety policies') || line.includes('bypass company authorization')) {
+        return `<span class="text-red-600 font-semibold">${escaped}</span>`;
+      }
+
+      for (const sig of signatures) {
+        if (sig && sig !== 'None' && line.includes(sig)) {
+          return `<span class="text-red-600 font-semibold">${escaped}</span>`;
+        }
+      }
+      return escaped;
+    }
+
     function computeUnifiedDiff(originalText, sanitizedText, isSanitized, signatures) {
       const origLines = (originalText || '').replace(/\r\n/g, '\n').split('\n');
       const cleanLines = (sanitizedText || '').replace(/\r\n/g, '\n').split('\n');
@@ -411,7 +435,8 @@
             oldNum: idx + 1,
             newNum: idx + 1,
             sign: ' ',
-            text: line
+            text: line,
+            htmlText: highlightBadWordsInLine(line, signatures)
           });
         });
         return rows;
@@ -499,10 +524,11 @@
         }
 
         const displayNum = row.oldNum || row.newNum || '';
+        const renderedText = row.htmlText || escapeHtml(row.text);
         html += `<div class="${rowClass}">` +
           `<span class="${numClass}">${displayNum}</span>` +
           `<span class="${signClass}">${row.sign || '&nbsp;'}</span>` +
-          `<span class="${textClass}">${escapeHtml(row.text)}</span>` +
+          `<span class="${textClass}">${renderedText}</span>` +
           `</div>`;
       }
       html += '</div>';
